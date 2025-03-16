@@ -1,0 +1,299 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This is a sample API using Swagger.",
+        "title": "My API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api/v1",
+    "paths": {
+        "/expense-plan/create": {
+            "post": {
+                "description": "Create expense-plan item",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ExpensePlan"
+                ],
+                "summary": "Create expense-plan item",
+                "parameters": [
+                    {
+                        "description": "CreateExpensePlanRequest",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateExpensePlanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateExpensePlanResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/expense-plan/get": {
+            "post": {
+                "description": "Get all expense-plan items (using cursor-based pagination)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ExpensePlan"
+                ],
+                "summary": "Get all expense-plan items",
+                "parameters": [
+                    {
+                        "description": "GetExpensePlanRequest",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/handler.GetExpensePlanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.GetExpensePlanResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/expense-plan/list": {
+            "post": {
+                "description": "List all expense-plan items (using cursor-based pagination)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ExpensePlan"
+                ],
+                "summary": "List all expense-plan items",
+                "parameters": [
+                    {
+                        "description": "ListExpensePlanRequest",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ListExpensePlanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ListExpensePlanResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handler.CreateExpensePlanRequest": {
+            "type": "object",
+            "required": [
+                "amount_planned",
+                "category",
+                "recurrency_type",
+                "title"
+            ],
+            "properties": {
+                "amount_planned": {
+                    "type": "integer"
+                },
+                "category": {
+                    "$ref": "#/definitions/query.ExpensePlanCategory"
+                },
+                "recurrency_type": {
+                    "$ref": "#/definitions/query.RecurrencyType"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CreateExpensePlanResponse": {
+            "type": "object",
+            "properties": {
+                "expense_plan_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.GetExpensePlanRequest": {
+            "type": "object",
+            "required": [
+                "expense_plan_id"
+            ],
+            "properties": {
+                "expense_plan_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.GetExpensePlanResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handler.GetExpensePlanResponse_GetExpensePlan"
+                    }
+                }
+            }
+        },
+        "handler.GetExpensePlanResponse_GetExpensePlan": {
+            "type": "object",
+            "properties": {
+                "amount_planned": {
+                    "type": "integer"
+                },
+                "category": {
+                    "$ref": "#/definitions/query.ExpensePlanCategory"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "expense_plan_id": {
+                    "type": "integer"
+                },
+                "first_payment_date": {
+                    "type": "string"
+                },
+                "last_amount_spent": {
+                    "type": "integer"
+                },
+                "last_paid_date": {
+                    "type": "string"
+                },
+                "last_payment_date": {
+                    "type": "string"
+                },
+                "paid_count": {
+                    "type": "integer"
+                },
+                "recurrency_interval": {
+                    "type": "integer"
+                },
+                "recurrency_type": {
+                    "$ref": "#/definitions/query.RecurrencyType"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.ListExpensePlanRequest": {
+            "type": "object"
+        },
+        "handler.ListExpensePlanResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handler.ListExpensePlanResponse_ListExpensePlan"
+                    }
+                }
+            }
+        },
+        "handler.ListExpensePlanResponse_ListExpensePlan": {
+            "type": "object",
+            "properties": {
+                "amount_planned": {
+                    "type": "integer"
+                },
+                "category": {
+                    "$ref": "#/definitions/query.ExpensePlanCategory"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "expense_plan_id": {
+                    "type": "integer"
+                },
+                "first_payment_date": {
+                    "type": "string"
+                },
+                "last_amount_spent": {
+                    "type": "integer"
+                },
+                "last_paid_date": {
+                    "type": "string"
+                },
+                "last_payment_date": {
+                    "type": "string"
+                },
+                "paid_count": {
+                    "type": "integer"
+                },
+                "recurrency_interval": {
+                    "type": "integer"
+                },
+                "recurrency_type": {
+                    "$ref": "#/definitions/query.RecurrencyType"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "query.ExpensePlanCategory": {
+            "type": "string",
+            "enum": [
+                "FOOD",
+                "TRANSPORT",
+                "PROPERTY",
+                "TAX",
+                "ENTERTAINMENT",
+                "OTHER"
+            ],
+            "x-enum-varnames": [
+                "ExpensePlanCategoryFOOD",
+                "ExpensePlanCategoryTRANSPORT",
+                "ExpensePlanCategoryPROPERTY",
+                "ExpensePlanCategoryTAX",
+                "ExpensePlanCategoryENTERTAINMENT",
+                "ExpensePlanCategoryOTHER"
+            ]
+        },
+        "query.RecurrencyType": {
+            "type": "string",
+            "enum": [
+                "MONTHLY",
+                "YEARLY"
+            ],
+            "x-enum-varnames": [
+                "RecurrencyTypeMONTHLY",
+                "RecurrencyTypeYEARLY"
+            ]
+        }
+    }
+}

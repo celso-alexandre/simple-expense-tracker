@@ -1,0 +1,55 @@
+datasource db {
+   provider  = "postgresql"
+   url       = env("DATABASE_URL")
+   directUrl = env("DIRECT_URL")
+}
+
+// generator db {
+//    provider = "go run github.com/steebchen/prisma-client-go"
+// }
+
+enum expense_plan_category {
+   FOOD
+   TRANSPORT
+   PROPERTY
+   TAX
+   ENTERTAINMENT
+   OTHER
+}
+
+enum recurrency_type {
+   MONTHLY
+   YEARLY
+}
+
+model expense_plan {
+   expense_plan_id     Int                   @id @default(autoincrement())
+   title               String
+   amount_planned      Int
+   first_payment_date  DateTime?             @db.Timestamptz()
+   last_payment_date   DateTime?             @db.Timestamptz()
+   last_paid_date      DateTime?             @db.Timestamptz()
+   last_amount_spent   Int                   @default(0)
+   paid_count          Int                   @default(0)
+   recurrency_type     recurrency_type?
+   recurrency_interval Int                   @default(0)
+   category            expense_plan_category
+   created_at          DateTime              @default(now()) @db.Timestamptz()
+   updated_at          DateTime              @updatedAt @db.Timestamptz()
+
+   expense_record expense_record[]
+}
+
+model expense_record {
+   expense_record_id       Int          @id @default(autoincrement())
+   expense_plan_id         Int
+   expense_plan            expense_plan @relation(fields: [expense_plan_id], references: [expense_plan_id])
+   amount_paid             Int
+   payment_date            DateTime     @db.Timestamptz()
+   paid_date               DateTime     @db.Timestamptz()
+   expense_plan_sequence   Int
+   previous_payment_amount Int?
+   previous_payment_date   DateTime?    @db.Timestamptz()
+   created_at              DateTime     @default(now()) @db.Timestamptz()
+   updated_at              DateTime     @updatedAt @db.Timestamptz()
+}

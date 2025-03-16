@@ -1,0 +1,12 @@
+version: "2"
+sql:
+  - engine: "postgresql"
+    queries: "query.sql"
+    schema: "./prisma/schema.sql"
+    database:
+      uri: ${DATABASE_URL}
+    gen:
+      go:
+        package: "query"
+        out: "query"
+        sql_package: "pgx/v5"

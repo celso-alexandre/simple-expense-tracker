@@ -1,0 +1,9 @@
+{
+  "scripts": {
+    "generate": "cd api && pnpm prisma:push && pnpm swagger:generate && cd ../web && pnpm orval",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7"
+  }
+}

@@ -1,0 +1,9 @@
+pnpm i
+
+cd api
+pnpm i
+go build .
+
+cd ../web
+pnpm i
+pnpm build

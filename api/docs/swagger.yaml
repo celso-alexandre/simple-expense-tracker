@@ -1,0 +1,199 @@
+basePath: /api/v1
+definitions:
+  handler.CreateExpensePlanRequest:
+    properties:
+      amount_planned:
+        type: integer
+      category:
+        $ref: '#/definitions/query.ExpensePlanCategory'
+      recurrency_type:
+        $ref: '#/definitions/query.RecurrencyType'
+      title:
+        type: string
+    required:
+    - amount_planned
+    - category
+    - recurrency_type
+    - title
+    type: object
+  handler.CreateExpensePlanResponse:
+    properties:
+      expense_plan_id:
+        type: integer
+    type: object
+  handler.GetExpensePlanRequest:
+    properties:
+      expense_plan_id:
+        type: integer
+    required:
+    - expense_plan_id
+    type: object
+  handler.GetExpensePlanResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/handler.GetExpensePlanResponse_GetExpensePlan'
+        type: array
+    type: object
+  handler.GetExpensePlanResponse_GetExpensePlan:
+    properties:
+      amount_planned:
+        type: integer
+      category:
+        $ref: '#/definitions/query.ExpensePlanCategory'
+      created_at:
+        type: string
+      expense_plan_id:
+        type: integer
+      first_payment_date:
+        type: string
+      last_amount_spent:
+        type: integer
+      last_paid_date:
+        type: string
+      last_payment_date:
+        type: string
+      paid_count:
+        type: integer
+      recurrency_interval:
+        type: integer
+      recurrency_type:
+        $ref: '#/definitions/query.RecurrencyType'
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  handler.ListExpensePlanRequest:
+    type: object
+  handler.ListExpensePlanResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/handler.ListExpensePlanResponse_ListExpensePlan'
+        type: array
+    type: object
+  handler.ListExpensePlanResponse_ListExpensePlan:
+    properties:
+      amount_planned:
+        type: integer
+      category:
+        $ref: '#/definitions/query.ExpensePlanCategory'
+      created_at:
+        type: string
+      expense_plan_id:
+        type: integer
+      first_payment_date:
+        type: string
+      last_amount_spent:
+        type: integer
+      last_paid_date:
+        type: string
+      last_payment_date:
+        type: string
+      paid_count:
+        type: integer
+      recurrency_interval:
+        type: integer
+      recurrency_type:
+        $ref: '#/definitions/query.RecurrencyType'
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  query.ExpensePlanCategory:
+    enum:
+    - FOOD
+    - TRANSPORT
+    - PROPERTY
+    - TAX
+    - ENTERTAINMENT
+    - OTHER
+    type: string
+    x-enum-varnames:
+    - ExpensePlanCategoryFOOD
+    - ExpensePlanCategoryTRANSPORT
+    - ExpensePlanCategoryPROPERTY
+    - ExpensePlanCategoryTAX
+    - ExpensePlanCategoryENTERTAINMENT
+    - ExpensePlanCategoryOTHER
+  query.RecurrencyType:
+    enum:
+    - MONTHLY
+    - YEARLY
+    type: string
+    x-enum-varnames:
+    - RecurrencyTypeMONTHLY
+    - RecurrencyTypeYEARLY
+host: localhost:8080
+info:
+  contact: {}
+  description: This is a sample API using Swagger.
+  title: My API
+  version: "1.0"
+paths:
+  /expense-plan/create:
+    post:
+      consumes:
+      - application/json
+      description: Create expense-plan item
+      parameters:
+      - description: CreateExpensePlanRequest
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/handler.CreateExpensePlanRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.CreateExpensePlanResponse'
+      summary: Create expense-plan item
+      tags:
+      - ExpensePlan
+  /expense-plan/get:
+    post:
+      consumes:
+      - application/json
+      description: Get all expense-plan items (using cursor-based pagination)
+      parameters:
+      - description: GetExpensePlanRequest
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/handler.GetExpensePlanRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.GetExpensePlanResponse'
+      summary: Get all expense-plan items
+      tags:
+      - ExpensePlan
+  /expense-plan/list:
+    post:
+      consumes:
+      - application/json
+      description: List all expense-plan items (using cursor-based pagination)
+      parameters:
+      - description: ListExpensePlanRequest
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/handler.ListExpensePlanRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.ListExpensePlanResponse'
+      summary: List all expense-plan items
+      tags:
+      - ExpensePlan
+swagger: "2.0"

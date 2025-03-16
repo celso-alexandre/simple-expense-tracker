@@ -1,0 +1,19 @@
+{
+   "scripts": {
+      "sqlc:introspect": "pnpm ts-node --transpile-only scripts/sqlc-introspect.ts",
+      "prisma:generate": "go run github.com/steebchen/prisma-client-go generate",
+      "prisma:push": "pnpm prisma db push && pnpm sqlc:introspect && pnpm sqlc:generate",
+      "prisma:migrate": "pnpm prisma migrate dev && pnpm sqlc:introspect && pnpm sqlc:generate",
+      "prisma:studio": "prisma studio",
+      "sqlc:generate": "bash scripts/sqlc-generate.sh",
+      "dev": "air || (go install github.com/air-verse/air@latest && air)",
+      "swagger:generate": "go install github.com/swaggo/swag/cmd/swag@latest && swag init"
+   },
+   "devDependencies": {
+      "@types/node": "22",
+      "dotenv": "^16.4.7",
+      "prisma": "^6.5.0",
+      "ts-node": "^10.9.2",
+      "typescript": "^5.8.2"
+   }
+}
