@@ -31,3 +31,6 @@ UPDATE expense_plan SET
    updated_at = NOW()
 WHERE expense_plan_id = sqlc.arg('expense_plan_id')
 RETURNING *;
+
+-- name: DeleteExpensePlan :execrows
+DELETE FROM expense_plan WHERE expense_plan_id = sqlc.arg('expense_plan_id');

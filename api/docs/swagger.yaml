@@ -20,6 +20,15 @@ definitions:
       expense_plan_id:
         type: integer
     type: object
+  handler.DeleteExpensePlanRequest:
+    properties:
+      expense_plan_id:
+        type: integer
+    required:
+    - expense_plan_id
+    type: object
+  handler.DeleteExpensePlanResponse:
+    type: object
   handler.GetExpensePlanRequest:
     properties:
       expense_plan_id:
@@ -167,6 +176,27 @@ paths:
           schema:
             $ref: '#/definitions/handler.CreateExpensePlanResponse'
       summary: Create expense-plan item
+      tags:
+      - ExpensePlan
+  /expense-plan/delete:
+    post:
+      consumes:
+      - application/json
+      description: Delete expense-plan item
+      parameters:
+      - description: DeleteExpensePlanRequest
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/handler.DeleteExpensePlanRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.DeleteExpensePlanResponse'
+      summary: Delete expense-plan item
       tags:
       - ExpensePlan
   /expense-plan/get:

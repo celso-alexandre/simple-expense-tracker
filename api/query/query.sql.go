@@ -61,6 +61,18 @@ func (q *Queries) CreateExpensePlan(ctx context.Context, arg CreateExpensePlanPa
 	return i, err
 }
 
+const deleteExpensePlan = `-- name: DeleteExpensePlan :execrows
+DELETE FROM expense_plan WHERE expense_plan_id = $1
+`
+
+func (q *Queries) DeleteExpensePlan(ctx context.Context, expensePlanID int32) (int64, error) {
+	result, err := q.db.Exec(ctx, deleteExpensePlan, expensePlanID)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected(), nil
+}
+
 const getExpensePlan = `-- name: GetExpensePlan :one
 SELECT expense_plan_id, title, amount_planned, first_payment_date, last_payment_date, last_paid_date, last_amount_spent, paid_count, recurrency_type, recurrency_interval, category, created_at, updated_at FROM expense_plan WHERE expense_plan_id = $1
 `

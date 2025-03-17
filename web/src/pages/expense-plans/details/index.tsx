@@ -5,6 +5,8 @@ import { restCreateExpensePlan, restGetExpensePlan, restUpdateExpensePlan } from
 import { useState } from 'react';
 import { centsToDecimal, decimalToCents } from '../../../util/brlFormat';
 import { QueryExpensePlanCategory } from '../../../util/api/generated/generated.schemas';
+import useNotification from 'antd/es/notification/useNotification';
+import { GoBackButton } from '../../../components/go-back-button';
 
 export function ExpensePlanDetails() {
    const { ID } = useParams();
@@ -20,6 +22,8 @@ export function ExpensePlanDetails() {
          return restGetExpensePlan({ expense_plan_id: id });
       },
    });
+
+   const [noti, notiCtx] = useNotification();
 
    const [form] = Form.useForm<typeof data>();
    const recurrencyType = Form.useWatch('recurrency_type', form);
@@ -37,7 +41,9 @@ export function ExpensePlanDetails() {
                amount_planned: decimalToCents(values.amount_planned),
                recurrency_type: values.recurrency_type,
             });
+            noti.success({ message: 'Planejamento de despesas criado com sucesso. Redirecionando...' });
             navigate(`/expense-plans/${res.expense_plan_id}`);
+
             return;
          }
 
@@ -49,6 +55,8 @@ export function ExpensePlanDetails() {
             recurrency_type: values.recurrency_type,
          });
          refetch();
+         noti.success({ message: 'Planejamento de despesas atualizado com sucesso.' });
+
          return;
       } catch (error) {
          console.error(error);
@@ -59,7 +67,9 @@ export function ExpensePlanDetails() {
 
    return (
       <div className="flex mt-10 flex-col w-full gap-6">
-         <div>
+         {notiCtx}
+         <div className='flex flex-row gap-2 items-center'>
+            <GoBackButton />
             <h1 className="font-semibold text-2xl">
                {isNew ? 'Novo Planejamento Despesas' : `Planejamento Despesas #${id}`}
             </h1>

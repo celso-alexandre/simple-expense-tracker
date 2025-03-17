@@ -8,6 +8,8 @@
 import type {
   HandlerCreateExpensePlanRequest,
   HandlerCreateExpensePlanResponse,
+  HandlerDeleteExpensePlanRequest,
+  HandlerDeleteExpensePlanResponse,
   HandlerGetExpensePlanRequest,
   HandlerGetExpensePlanResponse,
   HandlerListExpensePlanRequest,
@@ -56,6 +58,49 @@ export const postExpensePlanCreate = async (handlerCreateExpensePlanRequest: Han
   const data: postExpensePlanCreateResponse['data'] = body ? JSON.parse(body) : {}
 
   return { data, status: res.status, headers: res.headers } as postExpensePlanCreateResponse
+}
+
+
+
+/**
+ * Delete expense-plan item
+ * @summary Delete expense-plan item
+ */
+export type postExpensePlanDeleteResponse200 = {
+  data: HandlerDeleteExpensePlanResponse
+  status: 200
+}
+    
+export type postExpensePlanDeleteResponseComposite = postExpensePlanDeleteResponse200;
+    
+export type postExpensePlanDeleteResponse = postExpensePlanDeleteResponseComposite & {
+  headers: Headers;
+}
+
+export const getPostExpensePlanDeleteUrl = () => {
+
+
+  
+
+  return `/expense-plan/delete`
+}
+
+export const postExpensePlanDelete = async (handlerDeleteExpensePlanRequest: HandlerDeleteExpensePlanRequest, options?: RequestInit): Promise<postExpensePlanDeleteResponse> => {
+  
+  const res = await fetch(getPostExpensePlanDeleteUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      handlerDeleteExpensePlanRequest,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+  const data: postExpensePlanDeleteResponse['data'] = body ? JSON.parse(body) : {}
+
+  return { data, status: res.status, headers: res.headers } as postExpensePlanDeleteResponse
 }
 
 

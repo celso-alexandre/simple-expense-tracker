@@ -2,8 +2,8 @@
 /* eslint-disable no-useless-catch */
 import { Config } from '../../config';
 import { joinUrl } from '../join-url';
-import { getPostExpensePlanCreateUrl, getPostExpensePlanGetUrl, getPostExpensePlanListUrl, getPostExpensePlanUpdateUrl, postExpensePlanCreateResponse, postExpensePlanGetResponse, postExpensePlanListResponse } from './generated/generated';
-import { HandlerCreateExpensePlanRequest, HandlerGetExpensePlanRequest, HandlerListExpensePlanRequest, HandlerUpdateExpensePlanRequest } from './generated/generated.schemas';
+import { getPostExpensePlanCreateUrl, getPostExpensePlanDeleteUrl, getPostExpensePlanGetUrl, getPostExpensePlanListUrl, getPostExpensePlanUpdateUrl, postExpensePlanCreateResponse, postExpensePlanGetResponse, postExpensePlanListResponse } from './generated/generated';
+import { HandlerCreateExpensePlanRequest, HandlerDeleteExpensePlanRequest, HandlerGetExpensePlanRequest, HandlerListExpensePlanRequest, HandlerUpdateExpensePlanRequest } from './generated/generated.schemas';
 
 const restEndpoint = Config.REST_ENDPOINT;
 
@@ -85,5 +85,13 @@ export async function restUpdateExpensePlan(
   timeout = Config.DEFAULT_REST_TIMEOUT_MS
 ): Promise<void> {
   const url = joinUrl(restEndpoint, getPostExpensePlanUpdateUrl());
+  await defaultPostQuery(url, request, timeout);
+}
+
+export async function restDeleteExpensePlan(
+  request: HandlerDeleteExpensePlanRequest,
+  timeout = Config.DEFAULT_REST_TIMEOUT_MS
+): Promise<void> {
+  const url = joinUrl(restEndpoint, getPostExpensePlanDeleteUrl());
   await defaultPostQuery(url, request, timeout);
 }

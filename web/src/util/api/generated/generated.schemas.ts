@@ -16,6 +16,12 @@ export interface HandlerCreateExpensePlanResponse {
   expense_plan_id?: number;
 }
 
+export interface HandlerDeleteExpensePlanRequest {
+  expense_plan_id: number;
+}
+
+export interface HandlerDeleteExpensePlanResponse { [key: string]: unknown }
+
 export interface HandlerGetExpensePlanRequest {
   expense_plan_id: number;
 }

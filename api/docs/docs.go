@@ -48,6 +48,39 @@ const docTemplate = `{
                 }
             }
         },
+        "/expense-plan/delete": {
+            "post": {
+                "description": "Delete expense-plan item",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ExpensePlan"
+                ],
+                "summary": "Delete expense-plan item",
+                "parameters": [
+                    {
+                        "description": "DeleteExpensePlanRequest",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/handler.DeleteExpensePlanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.DeleteExpensePlanResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/expense-plan/get": {
             "post": {
                 "description": "Get all expense-plan items (using cursor-based pagination)",
@@ -178,6 +211,20 @@ const docTemplate = `{
                     "type": "integer"
                 }
             }
+        },
+        "handler.DeleteExpensePlanRequest": {
+            "type": "object",
+            "required": [
+                "expense_plan_id"
+            ],
+            "properties": {
+                "expense_plan_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.DeleteExpensePlanResponse": {
+            "type": "object"
         },
         "handler.GetExpensePlanRequest": {
             "type": "object",
