@@ -90,7 +90,6 @@ export function ExpensePlanDetails() {
                      category: data?.category || '',
                      recurrency_type: data?.recurrency_type || '',
                      amount_planned: centsToDecimal(data?.amount_planned),
-                     last_amount_spent: centsToDecimal(data?.last_amount_spent),
                   }}
                   className="grid grid-cols-2 gap-4"
                >
@@ -99,7 +98,9 @@ export function ExpensePlanDetails() {
                   </Form.Item>
 
                   <Form.Item name="category" label="Categoria" rules={[{ required: true, message: 'Campo obrigatório' }]}>
-                     <Select value={data?.category}>
+                     <Select 
+                        value={data?.category}
+                     >
                         {Object.entries(QueryExpensePlanCategory).map(([, value]) => (
                            <Select.Option key={value} value={value}>
                               {value}
@@ -112,9 +113,9 @@ export function ExpensePlanDetails() {
                      <InputNumber decimalSeparator=',' precision={2} className="w-full" />
                   </Form.Item>
 
-                  <Form.Item name="last_amount_spent" label="Último Gasto">
+                  {/* <Form.Item name="last_amount_spent" label="Último Gasto">
                      <InputNumber decimalSeparator=',' precision={2} disabled className="w-full" />
-                  </Form.Item>
+                  </Form.Item> */}
 
                   <Form.Item name="recurrency_type" label="Recorrência">
                      <Select>

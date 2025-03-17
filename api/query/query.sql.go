@@ -29,7 +29,7 @@ INSERT INTO expense_plan (
    NOW(),
    NOW()
 )
-RETURNING expense_plan_id, title, amount_planned, last_paid_date, last_amount_spent, paid_count, recurrency_type, recurrency_interval, category, created_at, updated_at, first_paid_date
+RETURNING expense_plan_id, title, amount_planned, recurrency_type, recurrency_interval, category, created_at, updated_at, first_expense_plan_record_id, last_expense_plan_record_id
 `
 
 type CreateExpensePlanParams struct {
@@ -53,15 +53,13 @@ func (q *Queries) CreateExpensePlan(ctx context.Context, arg CreateExpensePlanPa
 		&i.ExpensePlanID,
 		&i.Title,
 		&i.AmountPlanned,
-		&i.LastPaidDate,
-		&i.LastAmountSpent,
-		&i.PaidCount,
 		&i.RecurrencyType,
 		&i.RecurrencyInterval,
 		&i.Category,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.FirstPaidDate,
+		&i.FirstExpensePlanRecordID,
+		&i.LastExpensePlanRecordID,
 	)
 	return i, err
 }
@@ -147,25 +145,65 @@ func (q *Queries) DeleteExpensePlanRecord(ctx context.Context, expensePlanRecord
 }
 
 const getExpensePlan = `-- name: GetExpensePlan :one
-SELECT expense_plan_id, title, amount_planned, last_paid_date, last_amount_spent, paid_count, recurrency_type, recurrency_interval, category, created_at, updated_at, first_paid_date FROM expense_plan WHERE expense_plan_id = $1
+SELECT 
+   pla.expense_plan_id, pla.title, pla.amount_planned, pla.recurrency_type, pla.recurrency_interval, pla.category, pla.created_at, pla.updated_at, pla.first_expense_plan_record_id, pla.last_expense_plan_record_id,
+   frec.amount_paid as first_amount_paid,
+   frec.payment_date as first_payment_date,
+   frec.paid_date as first_paid_date,
+   frec.expense_plan_sequence as first_expense_plan_sequence,
+   lrec.amount_paid as last_amount_paid,
+   lrec.payment_date as last_payment_date,
+   lrec.paid_date as last_paid_date,
+   lrec.expense_plan_sequence as last_expense_plan_sequence
+FROM expense_plan pla
+LEFT JOIN expense_plan_record frec ON pla.first_expense_plan_record_id = frec.expense_plan_record_id
+LEFT JOIN expense_plan_record lrec ON pla.last_expense_plan_record_id = lrec.expense_plan_record_id
+WHERE pla.expense_plan_id = $1
 `
 
-func (q *Queries) GetExpensePlan(ctx context.Context, expensePlanID int32) (ExpensePlan, error) {
+type GetExpensePlanRow struct {
+	ExpensePlanID            int32
+	Title                    string
+	AmountPlanned            int32
+	RecurrencyType           NullRecurrencyType
+	RecurrencyInterval       int32
+	Category                 ExpensePlanCategory
+	CreatedAt                pgtype.Timestamptz
+	UpdatedAt                pgtype.Timestamptz
+	FirstExpensePlanRecordID pgtype.Int4
+	LastExpensePlanRecordID  pgtype.Int4
+	FirstAmountPaid          pgtype.Int4
+	FirstPaymentDate         pgtype.Timestamptz
+	FirstPaidDate            pgtype.Timestamptz
+	FirstExpensePlanSequence pgtype.Int4
+	LastAmountPaid           pgtype.Int4
+	LastPaymentDate          pgtype.Timestamptz
+	LastPaidDate             pgtype.Timestamptz
+	LastExpensePlanSequence  pgtype.Int4
+}
+
+func (q *Queries) GetExpensePlan(ctx context.Context, expensePlanID int32) (GetExpensePlanRow, error) {
 	row := q.db.QueryRow(ctx, getExpensePlan, expensePlanID)
-	var i ExpensePlan
+	var i GetExpensePlanRow
 	err := row.Scan(
 		&i.ExpensePlanID,
 		&i.Title,
 		&i.AmountPlanned,
-		&i.LastPaidDate,
-		&i.LastAmountSpent,
-		&i.PaidCount,
 		&i.RecurrencyType,
 		&i.RecurrencyInterval,
 		&i.Category,
 		&i.CreatedAt,
 		&i.UpdatedAt,
+		&i.FirstExpensePlanRecordID,
+		&i.LastExpensePlanRecordID,
+		&i.FirstAmountPaid,
+		&i.FirstPaymentDate,
 		&i.FirstPaidDate,
+		&i.FirstExpensePlanSequence,
+		&i.LastAmountPaid,
+		&i.LastPaymentDate,
+		&i.LastPaidDate,
+		&i.LastExpensePlanSequence,
 	)
 	return i, err
 }
@@ -283,31 +321,70 @@ func (q *Queries) ListExpensePlanRecords(ctx context.Context) ([]ListExpensePlan
 }
 
 const listExpensePlans = `-- name: ListExpensePlans :many
-SELECT expense_plan_id, title, amount_planned, last_paid_date, last_amount_spent, paid_count, recurrency_type, recurrency_interval, category, created_at, updated_at, first_paid_date FROM expense_plan
+SELECT 
+   pla.expense_plan_id, pla.title, pla.amount_planned, pla.recurrency_type, pla.recurrency_interval, pla.category, pla.created_at, pla.updated_at, pla.first_expense_plan_record_id, pla.last_expense_plan_record_id,
+   frec.amount_paid as first_amount_paid,
+   frec.payment_date as first_payment_date,
+   frec.paid_date as first_paid_date,
+   frec.expense_plan_sequence as first_expense_plan_sequence,
+   lrec.amount_paid as last_amount_paid,
+   lrec.payment_date as last_payment_date,
+   lrec.paid_date as last_paid_date,
+   lrec.expense_plan_sequence as last_expense_plan_sequence
+FROM expense_plan pla
+LEFT JOIN expense_plan_record frec ON pla.first_expense_plan_record_id = frec.expense_plan_record_id
+LEFT JOIN expense_plan_record lrec ON pla.last_expense_plan_record_id = lrec.expense_plan_record_id
 `
 
-func (q *Queries) ListExpensePlans(ctx context.Context) ([]ExpensePlan, error) {
+type ListExpensePlansRow struct {
+	ExpensePlanID            int32
+	Title                    string
+	AmountPlanned            int32
+	RecurrencyType           NullRecurrencyType
+	RecurrencyInterval       int32
+	Category                 ExpensePlanCategory
+	CreatedAt                pgtype.Timestamptz
+	UpdatedAt                pgtype.Timestamptz
+	FirstExpensePlanRecordID pgtype.Int4
+	LastExpensePlanRecordID  pgtype.Int4
+	FirstAmountPaid          pgtype.Int4
+	FirstPaymentDate         pgtype.Timestamptz
+	FirstPaidDate            pgtype.Timestamptz
+	FirstExpensePlanSequence pgtype.Int4
+	LastAmountPaid           pgtype.Int4
+	LastPaymentDate          pgtype.Timestamptz
+	LastPaidDate             pgtype.Timestamptz
+	LastExpensePlanSequence  pgtype.Int4
+}
+
+func (q *Queries) ListExpensePlans(ctx context.Context) ([]ListExpensePlansRow, error) {
 	rows, err := q.db.Query(ctx, listExpensePlans)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ExpensePlan
+	var items []ListExpensePlansRow
 	for rows.Next() {
-		var i ExpensePlan
+		var i ListExpensePlansRow
 		if err := rows.Scan(
 			&i.ExpensePlanID,
 			&i.Title,
 			&i.AmountPlanned,
-			&i.LastPaidDate,
-			&i.LastAmountSpent,
-			&i.PaidCount,
 			&i.RecurrencyType,
 			&i.RecurrencyInterval,
 			&i.Category,
 			&i.CreatedAt,
 			&i.UpdatedAt,
+			&i.FirstExpensePlanRecordID,
+			&i.LastExpensePlanRecordID,
+			&i.FirstAmountPaid,
+			&i.FirstPaymentDate,
 			&i.FirstPaidDate,
+			&i.FirstExpensePlanSequence,
+			&i.LastAmountPaid,
+			&i.LastPaymentDate,
+			&i.LastPaidDate,
+			&i.LastExpensePlanSequence,
 		); err != nil {
 			return nil, err
 		}
@@ -328,7 +405,7 @@ UPDATE expense_plan SET
    recurrency_interval = $5,
    updated_at = NOW()
 WHERE expense_plan_id = $6
-RETURNING expense_plan_id, title, amount_planned, last_paid_date, last_amount_spent, paid_count, recurrency_type, recurrency_interval, category, created_at, updated_at, first_paid_date
+RETURNING expense_plan_id, title, amount_planned, recurrency_type, recurrency_interval, category, created_at, updated_at, first_expense_plan_record_id, last_expense_plan_record_id
 `
 
 type UpdateExpensePlanParams struct {
@@ -354,58 +431,52 @@ func (q *Queries) UpdateExpensePlan(ctx context.Context, arg UpdateExpensePlanPa
 		&i.ExpensePlanID,
 		&i.Title,
 		&i.AmountPlanned,
-		&i.LastPaidDate,
-		&i.LastAmountSpent,
-		&i.PaidCount,
 		&i.RecurrencyType,
 		&i.RecurrencyInterval,
 		&i.Category,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.FirstPaidDate,
+		&i.FirstExpensePlanRecordID,
+		&i.LastExpensePlanRecordID,
 	)
 	return i, err
 }
 
 const updateExpensePlanAfterRecord = `-- name: UpdateExpensePlanAfterRecord :one
 UPDATE expense_plan SET
-   first_paid_date = COALESCE(first_paid_date, $1),
-   last_paid_date = COALESCE(last_paid_date, $1),
-   last_amount_spent = COALESCE(last_amount_spent, $2),
-   paid_count = $3,
+   first_expense_plan_record_id = COALESCE((
+      SELECT r.expense_plan_record_id
+      FROM expense_plan_record r
+      WHERE r.expense_plan_id = $1
+      ORDER BY r.payment_date ASC
+      LIMIT 1
+   ), NULL),
+   last_expense_plan_record_id = COALESCE((
+      SELECT r.expense_plan_record_id
+      FROM expense_plan_record r
+      WHERE r.expense_plan_id = $1
+      ORDER BY r.payment_date DESC
+      LIMIT 1
+   ), NULL),
    updated_at = NOW()
-WHERE expense_plan_id = $4
-RETURNING expense_plan_id, title, amount_planned, last_paid_date, last_amount_spent, paid_count, recurrency_type, recurrency_interval, category, created_at, updated_at, first_paid_date
+WHERE expense_plan_id = $1
+RETURNING expense_plan_id, title, amount_planned, recurrency_type, recurrency_interval, category, created_at, updated_at, first_expense_plan_record_id, last_expense_plan_record_id
 `
 
-type UpdateExpensePlanAfterRecordParams struct {
-	PaidDate      pgtype.Timestamptz
-	AmountPaid    int32
-	PaidCount     int32
-	ExpensePlanID int32
-}
-
-func (q *Queries) UpdateExpensePlanAfterRecord(ctx context.Context, arg UpdateExpensePlanAfterRecordParams) (ExpensePlan, error) {
-	row := q.db.QueryRow(ctx, updateExpensePlanAfterRecord,
-		arg.PaidDate,
-		arg.AmountPaid,
-		arg.PaidCount,
-		arg.ExpensePlanID,
-	)
+func (q *Queries) UpdateExpensePlanAfterRecord(ctx context.Context, expensePlanID int32) (ExpensePlan, error) {
+	row := q.db.QueryRow(ctx, updateExpensePlanAfterRecord, expensePlanID)
 	var i ExpensePlan
 	err := row.Scan(
 		&i.ExpensePlanID,
 		&i.Title,
 		&i.AmountPlanned,
-		&i.LastPaidDate,
-		&i.LastAmountSpent,
-		&i.PaidCount,
 		&i.RecurrencyType,
 		&i.RecurrencyInterval,
 		&i.Category,
 		&i.CreatedAt,
 		&i.UpdatedAt,
-		&i.FirstPaidDate,
+		&i.FirstExpensePlanRecordID,
+		&i.LastExpensePlanRecordID,
 	)
 	return i, err
 }

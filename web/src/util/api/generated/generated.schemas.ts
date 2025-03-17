@@ -74,14 +74,22 @@ export interface HandlerGetExpensePlanResponse {
   category?: QueryExpensePlanCategory;
   created_at?: string;
   expense_plan_id?: number;
-  first_paid_date?: string;
-  last_amount_spent?: number;
-  last_paid_date?: string;
-  paid_count?: number;
+  first_expense_plan_record?: HandlerGetExpensePlanResponseExpensePlanRecord;
+  first_expense_plan_record_id?: number;
+  last_expense_plan_record?: HandlerGetExpensePlanResponseExpensePlanRecord;
+  last_expense_plan_record_id?: number;
   recurrency_interval?: number;
   recurrency_type?: QueryRecurrencyType;
   title?: string;
   updated_at?: string;
+}
+
+export interface HandlerGetExpensePlanResponseExpensePlanRecord {
+  amount_paid?: number;
+  expense_plan_record_id?: number;
+  expense_plan_sequence?: number;
+  paid_date?: string;
+  payment_date?: string;
 }
 
 export interface HandlerListExpensePlanRecordRequest { [key: string]: unknown }
@@ -122,10 +130,10 @@ export interface HandlerListExpensePlanResponseListExpensePlan {
   category?: QueryExpensePlanCategory;
   created_at?: string;
   expense_plan_id?: number;
-  first_paid_date?: string;
-  last_amount_spent?: number;
-  last_paid_date?: string;
-  paid_count?: number;
+  first_expense_plan_record?: HandlerGetExpensePlanResponseExpensePlanRecord;
+  first_expense_plan_record_id?: number;
+  last_expense_plan_record?: HandlerGetExpensePlanResponseExpensePlanRecord;
+  last_expense_plan_record_id?: number;
   recurrency_interval?: number;
   recurrency_type?: QueryRecurrencyType;
   title?: string;

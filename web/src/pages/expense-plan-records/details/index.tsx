@@ -1,13 +1,15 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Form, InputNumber, Button, Skeleton, DatePicker } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { centsToDecimal, decimalToCents } from '../../../util/brlFormat';
 import useNotification from 'antd/es/notification/useNotification';
 import { GoBackButton } from '../../../components/go-back-button';
 import { parseDateOrNull } from '../../../util/formatDate';
 import { SelectExpensePlans } from '../../../components/select-expense-plans';
-import { restCreateExpensePlanRecord, restGetExpensePlanRecord, restUpdateExpensePlanRecord } from '../../../util/api';
+import { restCreateExpensePlanRecord, restGetExpensePlan, restGetExpensePlanRecord, restUpdateExpensePlanRecord } from '../../../util/api';
+import { QueryRecurrencyType } from '../../../util/api/generated/generated.schemas';
+import { ManipulateType } from 'dayjs';
 
 export function ExpensePlanRecordDetails() {
    const { ID } = useParams();
@@ -24,9 +26,36 @@ export function ExpensePlanRecordDetails() {
       },
    });
 
+
    const [noti, notiCtx] = useNotification();
 
-   const [form] = Form.useForm<typeof data>();
+   const [form] = Form.useForm();
+   const expensePlanId = Form.useWatch('expense_plan_id', form);
+
+   const { data: dataExpensePlan } = useQuery({
+      queryKey: ['expense-plan-record-get', expensePlanId],
+      refetchOnMount: true,
+      queryFn: async () => {
+         if (!expensePlanId) return null;
+         return restGetExpensePlan({
+            expense_plan_id: expensePlanId,
+         });
+      },
+   });
+
+   useEffect(() => {
+      const rTypeToDjsUnit: { [key in QueryRecurrencyType]: ManipulateType } = {
+         MONTHLY: 'months',
+         YEARLY: 'years',
+      };
+      const djsUnit = rTypeToDjsUnit[dataExpensePlan?.recurrency_type || 'MONTHLY'];
+      form.setFieldsValue({
+         expense_plan_sequence: (dataExpensePlan?.recurrency_interval || 0) + 1,
+         amount_paid: 0,
+         payment_date: parseDateOrNull(dataExpensePlan?.first_expense_plan_record?.payment_date)?.add(1, djsUnit),
+         paid_date: parseDateOrNull(dataExpensePlan?.first_expense_plan_record?.payment_date)?.add(1, djsUnit),
+      });
+   }, [dataExpensePlan, form]);
 
    async function onFinish(values: typeof data) {
       console.log('onFinish', values);
@@ -84,7 +113,7 @@ export function ExpensePlanRecordDetails() {
                   form={form}
                   layout="vertical"
                   initialValues={{
-                     ...data,
+                     expense_plan_id: data?.expense_plan_id,
                      amount_paid: centsToDecimal(data?.amount_paid),
                      payment_date: parseDateOrNull(data?.payment_date),
                      paid_date: parseDateOrNull(data?.paid_date),

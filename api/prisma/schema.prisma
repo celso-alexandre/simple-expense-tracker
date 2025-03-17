@@ -25,16 +25,18 @@ enum recurrency_type {
 model expense_plan {
    expense_plan_id     Int                   @id @default(autoincrement())
    title               String
-   first_paid_date     DateTime?             @db.Timestamptz()
-   last_paid_date      DateTime?             @db.Timestamptz()
    amount_planned      Int
-   last_amount_spent   Int                   @default(0)
-   paid_count          Int                   @default(0)
    recurrency_type     recurrency_type?
    recurrency_interval Int                   @default(0)
    category            expense_plan_category
-   created_at          DateTime              @default(now()) @db.Timestamptz()
-   updated_at          DateTime              @updatedAt @db.Timestamptz()
+
+   first_expense_plan_record_id Int?
+   first_expense_plan_record    expense_plan_record? @relation("first_expense_plan_record", fields: [first_expense_plan_record_id], references: [expense_plan_record_id], onDelete: SetNull, onUpdate: Cascade)
+   last_expense_plan_record_id  Int?
+   last_expense_plan_record     expense_plan_record? @relation("last_expense_plan_record", fields: [last_expense_plan_record_id], references: [expense_plan_record_id], onDelete: SetNull, onUpdate: Cascade)
+
+   created_at DateTime @default(now()) @db.Timestamptz()
+   updated_at DateTime @updatedAt @db.Timestamptz()
 
    expense_plan_record expense_plan_record[]
 }
@@ -49,4 +51,7 @@ model expense_plan_record {
    expense_plan_sequence  Int
    created_at             DateTime     @default(now()) @db.Timestamptz()
    updated_at             DateTime     @updatedAt @db.Timestamptz()
+
+   first_expense_plan_record expense_plan[] @relation("first_expense_plan_record")
+   last_expense_plan_record  expense_plan[] @relation("last_expense_plan_record")
 }

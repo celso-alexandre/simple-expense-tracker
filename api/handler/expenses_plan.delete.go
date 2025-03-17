@@ -73,6 +73,14 @@ func DeleteExpensePlan(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	_, err = q.UpdateExpensePlanAfterRecord(ctx, int32(req.ExpensePlanId))
+	if err != nil {
+		msg := fmt.Sprintf("failed to update expense plan: %v", err)
+		fmt.Println(msg)
+		http.Error(w, msg, http.StatusInternalServerError)
+		return
+	}
+
 	err = tx.Commit(ctx)
 	if err != nil {
 		msg := fmt.Sprintf("failed to commit transaction: %v", err)

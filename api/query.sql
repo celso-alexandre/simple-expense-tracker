@@ -1,8 +1,33 @@
 -- name: ListExpensePlans :many
-SELECT * FROM expense_plan;
+SELECT 
+   pla.*,
+   frec.amount_paid as first_amount_paid,
+   frec.payment_date as first_payment_date,
+   frec.paid_date as first_paid_date,
+   frec.expense_plan_sequence as first_expense_plan_sequence,
+   lrec.amount_paid as last_amount_paid,
+   lrec.payment_date as last_payment_date,
+   lrec.paid_date as last_paid_date,
+   lrec.expense_plan_sequence as last_expense_plan_sequence
+FROM expense_plan pla
+LEFT JOIN expense_plan_record frec ON pla.first_expense_plan_record_id = frec.expense_plan_record_id
+LEFT JOIN expense_plan_record lrec ON pla.last_expense_plan_record_id = lrec.expense_plan_record_id;
 
 -- name: GetExpensePlan :one
-SELECT * FROM expense_plan WHERE expense_plan_id = sqlc.arg('expense_plan_id');
+SELECT 
+   pla.*,
+   frec.amount_paid as first_amount_paid,
+   frec.payment_date as first_payment_date,
+   frec.paid_date as first_paid_date,
+   frec.expense_plan_sequence as first_expense_plan_sequence,
+   lrec.amount_paid as last_amount_paid,
+   lrec.payment_date as last_payment_date,
+   lrec.paid_date as last_paid_date,
+   lrec.expense_plan_sequence as last_expense_plan_sequence
+FROM expense_plan pla
+LEFT JOIN expense_plan_record frec ON pla.first_expense_plan_record_id = frec.expense_plan_record_id
+LEFT JOIN expense_plan_record lrec ON pla.last_expense_plan_record_id = lrec.expense_plan_record_id
+WHERE pla.expense_plan_id = sqlc.arg('expense_plan_id');
 
 -- name: CreateExpensePlan :one
 INSERT INTO expense_plan (
@@ -90,10 +115,20 @@ RETURNING *;
 
 -- name: UpdateExpensePlanAfterRecord :one
 UPDATE expense_plan SET
-   first_paid_date = COALESCE(first_paid_date, sqlc.arg('paid_date')),
-   last_paid_date = COALESCE(last_paid_date, sqlc.arg('paid_date')),
-   last_amount_spent = COALESCE(last_amount_spent, sqlc.arg('amount_paid')),
-   paid_count = sqlc.arg('paid_count'),
+   first_expense_plan_record_id = COALESCE((
+      SELECT r.expense_plan_record_id
+      FROM expense_plan_record r
+      WHERE r.expense_plan_id = sqlc.arg('expense_plan_id')
+      ORDER BY r.payment_date ASC
+      LIMIT 1
+   ), NULL),
+   last_expense_plan_record_id = COALESCE((
+      SELECT r.expense_plan_record_id
+      FROM expense_plan_record r
+      WHERE r.expense_plan_id = sqlc.arg('expense_plan_id')
+      ORDER BY r.payment_date DESC
+      LIMIT 1
+   ), NULL),
    updated_at = NOW()
 WHERE expense_plan_id = sqlc.arg('expense_plan_id')
 RETURNING *;

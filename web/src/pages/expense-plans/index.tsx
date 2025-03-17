@@ -7,6 +7,7 @@ import { BiPencil, BiTrash } from 'react-icons/bi';
 import useModal from 'antd/es/modal/useModal';
 import useNotification from 'antd/es/notification/useNotification';
 import { Config } from '../../config';
+import { formatDate } from '../../util/formatDate';
 
 export function ExpensePlans() {
    const [modal, modalCtx] = useModal();
@@ -55,23 +56,23 @@ export function ExpensePlans() {
                         return centsToCurrency(value);
                      }
                   },
-                  // {
-                  //    dataIndex: 'last_amount_spent',
-                  //    title: 'Último Gasto',
-                  //    render(value, rec) {
-                  //       if (!value) return null;
-                  //       const diff = (rec.amount_planned || 0) - value;
-                  //       const last = centsToCurrency(value);
-                  //       if (!diff) return last;
-                  //       return (
-                  //          <div className='flex flex-row gap-1'>
-                  //             <span>{formatDate(rec.last_payment_date)}</span>
-                  //             <span>{last}</span>
-                  //             <span className={`${diff < 0 ? 'text-red-500': 'text-green-500'}`}>({centsToCurrency(diff)})</span>
-                  //          </div>
-                  //       );
-                  //    }
-                  // },
+                  {
+                     dataIndex: ['last_expense_plan_record', 'amount_paid'],
+                     title: 'Último Gasto',
+                     render(value, rec) {
+                        if (!value) return null;
+                        const diff = (rec.amount_planned || 0) - value;
+                        const last = centsToCurrency(value);
+                        if (!diff) return last;
+                        return (
+                           <div className='flex flex-row gap-1'>
+                              <span>{formatDate(rec.last_expense_plan_record?.payment_date)}</span>
+                              <span>{last}</span>
+                              <span className={`${diff < 0 ? 'text-red-500': 'text-green-500'}`}>({centsToCurrency(diff)})</span>
+                           </div>
+                        );
+                     }
+                  },
                   {
                      dataIndex: 'recurrency_type',
                      title: 'Recorrência',

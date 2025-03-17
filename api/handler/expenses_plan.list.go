@@ -17,12 +17,13 @@ type ListExpensePlanResponse_ListExpensePlan struct {
 	Title              string                    `json:"title"`
 	Category           query.ExpensePlanCategory `json:"category"`
 	AmountPlanned      uint32                    `json:"amount_planned"`
-	LastAmountSpent    uint32                    `json:"last_amount_spent"`
-	FirstPaidDate      string                    `json:"first_paid_date"`
-	LastPaidDate       string                    `json:"last_paid_date"`
-	PaidCount          uint32                    `json:"paid_count"`
 	RecurrencyType     *query.RecurrencyType     `json:"recurrency_type"`
 	RecurrencyInterval uint32                    `json:"recurrency_interval"`
+
+	FirstExpensePlanRecordId uint32                                    `json:"first_expense_plan_record_id"`
+	FirstExpensePlanRecord   *GetExpensePlanResponse_ExpensePlanRecord `json:"first_expense_plan_record"`
+	LastExpensePlanRecordId  uint32                                    `json:"last_expense_plan_record_id"`
+	LastExpensePlanRecord    *GetExpensePlanResponse_ExpensePlanRecord `json:"last_expense_plan_record"`
 
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
@@ -68,22 +69,41 @@ func ListExpensePlan(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var items = make([]ListExpensePlanResponse_ListExpensePlan, len(dbItems))
-	for i, item := range dbItems {
+	for i, dbItem := range dbItems {
 		items[i] = ListExpensePlanResponse_ListExpensePlan{
-			ExpensePlanId:      uint32(item.ExpensePlanID),
-			Title:              item.Title,
-			AmountPlanned:      uint32(item.AmountPlanned),
-			LastAmountSpent:    uint32(item.LastAmountSpent),
-			FirstPaidDate:      common.PgTimestamptzToISOString(&item.FirstPaidDate),
-			LastPaidDate:       common.PgTimestamptzToISOString(&item.LastPaidDate),
-			PaidCount:          uint32(item.PaidCount),
-			RecurrencyInterval: uint32(item.RecurrencyInterval),
-			Category:           item.Category,
-			CreatedAt:          common.PgTimestamptzToISOString(&item.CreatedAt),
-			UpdatedAt:          common.PgTimestamptzToISOString(&item.UpdatedAt),
+			ExpensePlanId:            uint32(dbItem.ExpensePlanID),
+			Title:                    dbItem.Title,
+			AmountPlanned:            uint32(dbItem.AmountPlanned),
+			RecurrencyInterval:       uint32(dbItem.RecurrencyInterval),
+			Category:                 dbItem.Category,
+			RecurrencyType:           nil,
+			FirstExpensePlanRecordId: uint32(dbItem.FirstExpensePlanRecordID.Int32),
+			FirstExpensePlanRecord:   nil,
+			LastExpensePlanRecordId:  uint32(dbItem.LastExpensePlanRecordID.Int32),
+			LastExpensePlanRecord:    nil,
+			CreatedAt:                common.PgTimestamptzToISOString(&dbItem.CreatedAt),
+			UpdatedAt:                common.PgTimestamptzToISOString(&dbItem.UpdatedAt),
 		}
-		if item.RecurrencyType.Valid {
-			items[i].RecurrencyType = &item.RecurrencyType.RecurrencyType
+		if dbItem.RecurrencyType.Valid {
+			items[i].RecurrencyType = &dbItem.RecurrencyType.RecurrencyType
+		}
+		if dbItem.FirstExpensePlanRecordID.Valid {
+			items[i].FirstExpensePlanRecord = &GetExpensePlanResponse_ExpensePlanRecord{
+				ExpensePlanRecordId: uint32(dbItem.FirstExpensePlanRecordID.Int32),
+				AmountPaid:          uint32(dbItem.FirstAmountPaid.Int32),
+				PaymentDate:         common.PgTimestamptzToISOString(&dbItem.FirstPaymentDate),
+				PaidDate:            common.PgTimestamptzToISOString(&dbItem.FirstPaidDate),
+				ExpensePlanSequence: uint32(dbItem.FirstExpensePlanSequence.Int32),
+			}
+		}
+		if dbItem.LastExpensePlanRecordID.Valid {
+			items[i].LastExpensePlanRecord = &GetExpensePlanResponse_ExpensePlanRecord{
+				ExpensePlanRecordId: uint32(dbItem.LastExpensePlanRecordID.Int32),
+				AmountPaid:          uint32(dbItem.LastAmountPaid.Int32),
+				PaymentDate:         common.PgTimestamptzToISOString(&dbItem.LastPaymentDate),
+				PaidDate:            common.PgTimestamptzToISOString(&dbItem.LastPaidDate),
+				ExpensePlanSequence: uint32(dbItem.LastExpensePlanSequence.Int32),
+			}
 		}
 	}
 

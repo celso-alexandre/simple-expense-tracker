@@ -65,15 +65,13 @@ CREATE TABLE public.expense_plan (
     expense_plan_id integer NOT NULL,
     title text NOT NULL,
     amount_planned integer NOT NULL,
-    last_paid_date timestamp with time zone,
-    last_amount_spent integer DEFAULT 0 NOT NULL,
-    paid_count integer DEFAULT 0 NOT NULL,
     recurrency_type public.recurrency_type,
     recurrency_interval integer DEFAULT 0 NOT NULL,
     category public.expense_plan_category NOT NULL,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    first_paid_date timestamp with time zone
+    first_expense_plan_record_id integer,
+    last_expense_plan_record_id integer
 );
 
 
@@ -169,6 +167,22 @@ ALTER TABLE ONLY public.expense_plan
 
 ALTER TABLE ONLY public.expense_plan_record
     ADD CONSTRAINT expense_plan_record_pkey PRIMARY KEY (expense_plan_record_id);
+
+
+--
+-- Name: expense_plan expense_plan_first_expense_plan_record_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.expense_plan
+    ADD CONSTRAINT expense_plan_first_expense_plan_record_id_fkey FOREIGN KEY (first_expense_plan_record_id) REFERENCES public.expense_plan_record(expense_plan_record_id) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: expense_plan expense_plan_last_expense_plan_record_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.expense_plan
+    ADD CONSTRAINT expense_plan_last_expense_plan_record_id_fkey FOREIGN KEY (last_expense_plan_record_id) REFERENCES public.expense_plan_record(expense_plan_record_id) ON UPDATE CASCADE ON DELETE SET NULL;
 
 
 --

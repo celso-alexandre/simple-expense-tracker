@@ -525,16 +525,16 @@ const docTemplate = `{
                 "expense_plan_id": {
                     "type": "integer"
                 },
-                "first_paid_date": {
-                    "type": "string"
+                "first_expense_plan_record": {
+                    "$ref": "#/definitions/handler.GetExpensePlanResponse_ExpensePlanRecord"
                 },
-                "last_amount_spent": {
+                "first_expense_plan_record_id": {
                     "type": "integer"
                 },
-                "last_paid_date": {
-                    "type": "string"
+                "last_expense_plan_record": {
+                    "$ref": "#/definitions/handler.GetExpensePlanResponse_ExpensePlanRecord"
                 },
-                "paid_count": {
+                "last_expense_plan_record_id": {
                     "type": "integer"
                 },
                 "recurrency_interval": {
@@ -547,6 +547,26 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.GetExpensePlanResponse_ExpensePlanRecord": {
+            "type": "object",
+            "properties": {
+                "amount_paid": {
+                    "type": "integer"
+                },
+                "expense_plan_record_id": {
+                    "type": "integer"
+                },
+                "expense_plan_sequence": {
+                    "type": "integer"
+                },
+                "paid_date": {
+                    "type": "string"
+                },
+                "payment_date": {
                     "type": "string"
                 }
             }
@@ -649,16 +669,16 @@ const docTemplate = `{
                 "expense_plan_id": {
                     "type": "integer"
                 },
-                "first_paid_date": {
-                    "type": "string"
+                "first_expense_plan_record": {
+                    "$ref": "#/definitions/handler.GetExpensePlanResponse_ExpensePlanRecord"
                 },
-                "last_amount_spent": {
+                "first_expense_plan_record_id": {
                     "type": "integer"
                 },
-                "last_paid_date": {
-                    "type": "string"
+                "last_expense_plan_record": {
+                    "$ref": "#/definitions/handler.GetExpensePlanResponse_ExpensePlanRecord"
                 },
-                "paid_count": {
+                "last_expense_plan_record_id": {
                     "type": "integer"
                 },
                 "recurrency_interval": {

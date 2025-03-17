@@ -116,13 +116,13 @@ definitions:
         type: string
       expense_plan_id:
         type: integer
-      first_paid_date:
-        type: string
-      last_amount_spent:
+      first_expense_plan_record:
+        $ref: '#/definitions/handler.GetExpensePlanResponse_ExpensePlanRecord'
+      first_expense_plan_record_id:
         type: integer
-      last_paid_date:
-        type: string
-      paid_count:
+      last_expense_plan_record:
+        $ref: '#/definitions/handler.GetExpensePlanResponse_ExpensePlanRecord'
+      last_expense_plan_record_id:
         type: integer
       recurrency_interval:
         type: integer
@@ -131,6 +131,19 @@ definitions:
       title:
         type: string
       updated_at:
+        type: string
+    type: object
+  handler.GetExpensePlanResponse_ExpensePlanRecord:
+    properties:
+      amount_paid:
+        type: integer
+      expense_plan_record_id:
+        type: integer
+      expense_plan_sequence:
+        type: integer
+      paid_date:
+        type: string
+      payment_date:
         type: string
     type: object
   handler.ListExpensePlanRecordRequest:
@@ -197,13 +210,13 @@ definitions:
         type: string
       expense_plan_id:
         type: integer
-      first_paid_date:
-        type: string
-      last_amount_spent:
+      first_expense_plan_record:
+        $ref: '#/definitions/handler.GetExpensePlanResponse_ExpensePlanRecord'
+      first_expense_plan_record_id:
         type: integer
-      last_paid_date:
-        type: string
-      paid_count:
+      last_expense_plan_record:
+        $ref: '#/definitions/handler.GetExpensePlanResponse_ExpensePlanRecord'
+      last_expense_plan_record_id:
         type: integer
       recurrency_interval:
         type: integer

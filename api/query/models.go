@@ -100,18 +100,16 @@ func (ns NullRecurrencyType) Value() (driver.Value, error) {
 }
 
 type ExpensePlan struct {
-	ExpensePlanID      int32
-	Title              string
-	AmountPlanned      int32
-	LastPaidDate       pgtype.Timestamptz
-	LastAmountSpent    int32
-	PaidCount          int32
-	RecurrencyType     NullRecurrencyType
-	RecurrencyInterval int32
-	Category           ExpensePlanCategory
-	CreatedAt          pgtype.Timestamptz
-	UpdatedAt          pgtype.Timestamptz
-	FirstPaidDate      pgtype.Timestamptz
+	ExpensePlanID            int32
+	Title                    string
+	AmountPlanned            int32
+	RecurrencyType           NullRecurrencyType
+	RecurrencyInterval       int32
+	Category                 ExpensePlanCategory
+	CreatedAt                pgtype.Timestamptz
+	UpdatedAt                pgtype.Timestamptz
+	FirstExpensePlanRecordID pgtype.Int4
+	LastExpensePlanRecordID  pgtype.Int4
 }
 
 type ExpensePlanRecord struct {
