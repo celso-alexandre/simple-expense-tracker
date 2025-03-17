@@ -8,7 +8,7 @@
 export interface HandlerCreateExpensePlanRequest {
   amount_planned: number;
   category: QueryExpensePlanCategory;
-  recurrency_type: QueryRecurrencyType;
+  recurrency_type?: QueryRecurrencyType;
   title: string;
 }
 
@@ -21,10 +21,6 @@ export interface HandlerGetExpensePlanRequest {
 }
 
 export interface HandlerGetExpensePlanResponse {
-  items?: HandlerGetExpensePlanResponseGetExpensePlan[];
-}
-
-export interface HandlerGetExpensePlanResponseGetExpensePlan {
   amount_planned?: number;
   category?: QueryExpensePlanCategory;
   created_at?: string;
@@ -60,6 +56,18 @@ export interface HandlerListExpensePlanResponseListExpensePlan {
   recurrency_type?: QueryRecurrencyType;
   title?: string;
   updated_at?: string;
+}
+
+export interface HandlerUpdateExpensePlanRequest {
+  amount_planned: number;
+  category: QueryExpensePlanCategory;
+  expense_plan_id: number;
+  recurrency_type?: QueryRecurrencyType;
+  title: string;
+}
+
+export interface HandlerUpdateExpensePlanResponse {
+  expense_plan_id?: number;
 }
 
 export type QueryExpensePlanCategory = typeof QueryExpensePlanCategory[keyof typeof QueryExpensePlanCategory];

@@ -10,28 +10,29 @@ import (
 	"github.com/celso-alexandre/api/query"
 )
 
-type CreateExpensePlanRequest struct {
+type UpdateExpensePlanRequest struct {
+	ExpensePlanId  uint32                    `json:"expense_plan_id" validate:"required"`
 	Title          string                    `json:"title" validate:"required"`
 	Category       query.ExpensePlanCategory `json:"category" validate:"required"`
 	AmountPlanned  uint32                    `json:"amount_planned" validate:"required"`
 	RecurrencyType *query.RecurrencyType     `json:"recurrency_type,omitempty"`
 }
 
-type CreateExpensePlanResponse struct {
+type UpdateExpensePlanResponse struct {
 	ExpensePlanId uint32 `json:"expense_plan_id"`
 }
 
-// CreateExpensePlan godoc
-// @Router       /expense-plan/create [post]
+// UpdateExpensePlan godoc
+// @Router       /expense-plan/update [post]
 // @Accept       json
-// @Param        request body CreateExpensePlanRequest false "CreateExpensePlanRequest"
+// @Param        request body UpdateExpensePlanRequest false "UpdateExpensePlanRequest"
 // @Produce      json
-// @Success      200   {object}  CreateExpensePlanResponse
-// @Summary      Create expense-plan item
-// @Description  Create expense-plan item
+// @Success      200   {object}  UpdateExpensePlanResponse
+// @Summary      Update expense-plan item
+// @Description  Update expense-plan item
 // @Tags         ExpensePlan
-func CreateExpensePlan(w http.ResponseWriter, r *http.Request) {
-	var req CreateExpensePlanRequest
+func UpdateExpensePlan(w http.ResponseWriter, r *http.Request) {
+	var req UpdateExpensePlanRequest
 	err := common.ParseReqBody(r, &req)
 	if err != nil {
 		msg := fmt.Sprintf("failed to parse request body: %v", err)
@@ -69,14 +70,15 @@ func CreateExpensePlan(w http.ResponseWriter, r *http.Request) {
 		recurrencyType.Valid = true
 		recurrencyType.RecurrencyType = *req.RecurrencyType
 	}
-	item, err := q.CreateExpensePlan(ctx, query.CreateExpensePlanParams{
+	item, err := q.UpdateExpensePlan(ctx, query.UpdateExpensePlanParams{
+		ExpensePlanID:  int32(req.ExpensePlanId),
 		Title:          req.Title,
 		Category:       query.NullExpensePlanCategory{Valid: true, ExpensePlanCategory: req.Category},
 		AmountPlanned:  int32(req.AmountPlanned),
 		RecurrencyType: recurrencyType,
 	})
 	if err != nil {
-		msg := fmt.Sprintf("failed to create expense plan: %v", err)
+		msg := fmt.Sprintf("failed to Update expense plan: %v", err)
 		fmt.Println(msg)
 		http.Error(w, msg, http.StatusInternalServerError)
 		return
@@ -90,5 +92,5 @@ func CreateExpensePlan(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	json.NewEncoder(w).Encode(&CreateExpensePlanResponse{ExpensePlanId: uint32(item.ExpensePlanID)})
+	json.NewEncoder(w).Encode(&UpdateExpensePlanResponse{ExpensePlanId: uint32(item.ExpensePlanID)})
 }

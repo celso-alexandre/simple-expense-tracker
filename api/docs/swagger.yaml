@@ -13,7 +13,6 @@ definitions:
     required:
     - amount_planned
     - category
-    - recurrency_type
     - title
     type: object
   handler.CreateExpensePlanResponse:
@@ -29,13 +28,6 @@ definitions:
     - expense_plan_id
     type: object
   handler.GetExpensePlanResponse:
-    properties:
-      items:
-        items:
-          $ref: '#/definitions/handler.GetExpensePlanResponse_GetExpensePlan'
-        type: array
-    type: object
-  handler.GetExpensePlanResponse_GetExpensePlan:
     properties:
       amount_planned:
         type: integer
@@ -101,6 +93,29 @@ definitions:
         type: string
       updated_at:
         type: string
+    type: object
+  handler.UpdateExpensePlanRequest:
+    properties:
+      amount_planned:
+        type: integer
+      category:
+        $ref: '#/definitions/query.ExpensePlanCategory'
+      expense_plan_id:
+        type: integer
+      recurrency_type:
+        $ref: '#/definitions/query.RecurrencyType'
+      title:
+        type: string
+    required:
+    - amount_planned
+    - category
+    - expense_plan_id
+    - title
+    type: object
+  handler.UpdateExpensePlanResponse:
+    properties:
+      expense_plan_id:
+        type: integer
     type: object
   query.ExpensePlanCategory:
     enum:
@@ -194,6 +209,27 @@ paths:
           schema:
             $ref: '#/definitions/handler.ListExpensePlanResponse'
       summary: List all expense-plan items
+      tags:
+      - ExpensePlan
+  /expense-plan/update:
+    post:
+      consumes:
+      - application/json
+      description: Update expense-plan item
+      parameters:
+      - description: UpdateExpensePlanRequest
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/handler.UpdateExpensePlanRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.UpdateExpensePlanResponse'
+      summary: Update expense-plan item
       tags:
       - ExpensePlan
 swagger: "2.0"

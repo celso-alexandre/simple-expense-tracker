@@ -14,7 +14,7 @@ type GetExpensePlanRequest struct {
 	ExpensePlanId uint32 `json:"expense_plan_id" validate:"required"`
 }
 
-type GetExpensePlanResponse_GetExpensePlan struct {
+type GetExpensePlanResponse struct {
 	ExpensePlanId      uint32                    `json:"expense_plan_id"`
 	Title              string                    `json:"title"`
 	Category           query.ExpensePlanCategory `json:"category"`
@@ -31,10 +31,6 @@ type GetExpensePlanResponse_GetExpensePlan struct {
 	UpdatedAt string `json:"updated_at"`
 }
 
-type GetExpensePlanResponse struct {
-	Items *[]GetExpensePlanResponse_GetExpensePlan `json:"items"`
-}
-
 // GetExpensePlan godoc
 // @Router       /expense-plan/get [post]
 // @Accept       json
@@ -46,7 +42,7 @@ type GetExpensePlanResponse struct {
 // @Tags         ExpensePlan
 func GetExpensePlan(w http.ResponseWriter, r *http.Request) {
 	var req GetExpensePlanRequest
-	err := common.ParseReqBody(r, req)
+	err := common.ParseReqBody(r, &req)
 	if err != nil {
 		msg := fmt.Sprintf("Failed to parse request body: %v", err)
 		fmt.Println(msg)
@@ -84,7 +80,7 @@ func GetExpensePlan(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := &GetExpensePlanResponse_GetExpensePlan{
+	response := &GetExpensePlanResponse{
 		ExpensePlanId:      uint32(dbItem.ExpensePlanID),
 		Title:              dbItem.Title,
 		AmountPlanned:      uint32(dbItem.AmountPlanned),

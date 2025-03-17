@@ -113,6 +113,39 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/expense-plan/update": {
+            "post": {
+                "description": "Update expense-plan item",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ExpensePlan"
+                ],
+                "summary": "Update expense-plan item",
+                "parameters": [
+                    {
+                        "description": "UpdateExpensePlanRequest",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/handler.UpdateExpensePlanRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.UpdateExpensePlanResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -121,7 +154,6 @@ const docTemplate = `{
             "required": [
                 "amount_planned",
                 "category",
-                "recurrency_type",
                 "title"
             ],
             "properties": {
@@ -159,17 +191,6 @@ const docTemplate = `{
             }
         },
         "handler.GetExpensePlanResponse": {
-            "type": "object",
-            "properties": {
-                "items": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/handler.GetExpensePlanResponse_GetExpensePlan"
-                    }
-                }
-            }
-        },
-        "handler.GetExpensePlanResponse_GetExpensePlan": {
             "type": "object",
             "properties": {
                 "amount_planned": {
@@ -268,6 +289,40 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "handler.UpdateExpensePlanRequest": {
+            "type": "object",
+            "required": [
+                "amount_planned",
+                "category",
+                "expense_plan_id",
+                "title"
+            ],
+            "properties": {
+                "amount_planned": {
+                    "type": "integer"
+                },
+                "category": {
+                    "$ref": "#/definitions/query.ExpensePlanCategory"
+                },
+                "expense_plan_id": {
+                    "type": "integer"
+                },
+                "recurrency_type": {
+                    "$ref": "#/definitions/query.RecurrencyType"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.UpdateExpensePlanResponse": {
+            "type": "object",
+            "properties": {
+                "expense_plan_id": {
+                    "type": "integer"
                 }
             }
         },

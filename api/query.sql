@@ -21,3 +21,13 @@ INSERT INTO expense_plan (
    NOW()
 )
 RETURNING *;
+
+-- name: UpdateExpensePlan :one
+UPDATE expense_plan SET
+   title = sqlc.arg('title'),
+   category = sqlc.narg('category'),
+   amount_planned = sqlc.arg('amount_planned'),
+   recurrency_type = sqlc.arg('recurrency_type'),
+   updated_at = NOW()
+WHERE expense_plan_id = sqlc.arg('expense_plan_id')
+RETURNING *;

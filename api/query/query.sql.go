@@ -123,3 +123,49 @@ func (q *Queries) ListExpensePlans(ctx context.Context) ([]ExpensePlan, error) {
 	}
 	return items, nil
 }
+
+const updateExpensePlan = `-- name: UpdateExpensePlan :one
+UPDATE expense_plan SET
+   title = $1,
+   category = $2,
+   amount_planned = $3,
+   recurrency_type = $4,
+   updated_at = NOW()
+WHERE expense_plan_id = $5
+RETURNING expense_plan_id, title, amount_planned, first_payment_date, last_payment_date, last_paid_date, last_amount_spent, paid_count, recurrency_type, recurrency_interval, category, created_at, updated_at
+`
+
+type UpdateExpensePlanParams struct {
+	Title          string
+	Category       NullExpensePlanCategory
+	AmountPlanned  int32
+	RecurrencyType NullRecurrencyType
+	ExpensePlanID  int32
+}
+
+func (q *Queries) UpdateExpensePlan(ctx context.Context, arg UpdateExpensePlanParams) (ExpensePlan, error) {
+	row := q.db.QueryRow(ctx, updateExpensePlan,
+		arg.Title,
+		arg.Category,
+		arg.AmountPlanned,
+		arg.RecurrencyType,
+		arg.ExpensePlanID,
+	)
+	var i ExpensePlan
+	err := row.Scan(
+		&i.ExpensePlanID,
+		&i.Title,
+		&i.AmountPlanned,
+		&i.FirstPaymentDate,
+		&i.LastPaymentDate,
+		&i.LastPaidDate,
+		&i.LastAmountSpent,
+		&i.PaidCount,
+		&i.RecurrencyType,
+		&i.RecurrencyInterval,
+		&i.Category,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}

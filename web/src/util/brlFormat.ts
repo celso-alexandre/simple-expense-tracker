@@ -2,15 +2,16 @@ export function formatBRL(value: number) {
   return Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL',
-  }).format(value);
+  }).format(value || 0);
 }
 
-export function centsToDecimal(cents: number) {
+export function centsToDecimal(cents: number | undefined) {
   if (!cents) return 0;
-  return cents / 100;
+  return Math.round(cents / 100);
 }
 
 export function decimalToCents(decimal: number) {
+  if (!decimal) return 0;
   return Math.round(decimal * 100);
 }
 

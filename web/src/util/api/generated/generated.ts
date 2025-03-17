@@ -11,7 +11,9 @@ import type {
   HandlerGetExpensePlanRequest,
   HandlerGetExpensePlanResponse,
   HandlerListExpensePlanRequest,
-  HandlerListExpensePlanResponse
+  HandlerListExpensePlanResponse,
+  HandlerUpdateExpensePlanRequest,
+  HandlerUpdateExpensePlanResponse
 } from './generated.schemas';
 
 
@@ -140,6 +142,49 @@ export const postExpensePlanList = async (handlerListExpensePlanRequest: Handler
   const data: postExpensePlanListResponse['data'] = body ? JSON.parse(body) : {}
 
   return { data, status: res.status, headers: res.headers } as postExpensePlanListResponse
+}
+
+
+
+/**
+ * Update expense-plan item
+ * @summary Update expense-plan item
+ */
+export type postExpensePlanUpdateResponse200 = {
+  data: HandlerUpdateExpensePlanResponse
+  status: 200
+}
+    
+export type postExpensePlanUpdateResponseComposite = postExpensePlanUpdateResponse200;
+    
+export type postExpensePlanUpdateResponse = postExpensePlanUpdateResponseComposite & {
+  headers: Headers;
+}
+
+export const getPostExpensePlanUpdateUrl = () => {
+
+
+  
+
+  return `/expense-plan/update`
+}
+
+export const postExpensePlanUpdate = async (handlerUpdateExpensePlanRequest: HandlerUpdateExpensePlanRequest, options?: RequestInit): Promise<postExpensePlanUpdateResponse> => {
+  
+  const res = await fetch(getPostExpensePlanUpdateUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      handlerUpdateExpensePlanRequest,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+  const data: postExpensePlanUpdateResponse['data'] = body ? JSON.parse(body) : {}
+
+  return { data, status: res.status, headers: res.headers } as postExpensePlanUpdateResponse
 }
 
 
