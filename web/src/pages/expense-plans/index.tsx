@@ -155,6 +155,11 @@ export function ExpensePlans() {
                ]}
             />
          </div>
+
+         <div className='flex flex-col'>
+            <span className='text-sm text-gray-500'>Total de registros: {data?.items?.length}</span>
+            <span className='text-sm text-gray-500'>Total: {centsToCurrency(data?.items?.reduce((prev, cur) => prev + (cur.amount_planned ?? 0), 0))}</span>
+         </div>
       </div>
    );
 }

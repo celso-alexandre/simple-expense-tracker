@@ -15,7 +15,7 @@ export function decimalToCents(decimal: number) {
   return Math.round(decimal * 100);
 }
 
-export function centsToCurrency(...cents: number[]) {
+export function centsToCurrency(...cents: (number | undefined)[]) {
   const decimal = centsToDecimal(
     cents.reduce((a, b) => {
       return (a ?? 0) + (b ?? 0);
