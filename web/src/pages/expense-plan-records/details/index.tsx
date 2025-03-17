@@ -1,14 +1,12 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Form, Input, InputNumber, Select, Button, Skeleton } from 'antd';
-import { restCreateExpensePlan, restGetExpensePlan, restUpdateExpensePlan } from '../../../util/api';
 import { useState } from 'react';
 import { centsToDecimal, decimalToCents } from '../../../util/brlFormat';
-import { QueryExpensePlanCategory } from '../../../util/api/generated/generated.schemas';
 import useNotification from 'antd/es/notification/useNotification';
 import { GoBackButton } from '../../../components/go-back-button';
 
-export function ExpensePlanDetails() {
+export function ExpensePlanRecordDetails() {
    const { ID } = useParams();
    const id = parseInt(ID ?? '0', 10);
    const isNew = !id;
@@ -19,7 +17,7 @@ export function ExpensePlanDetails() {
       queryKey: ['expense-plan-details', id],
       queryFn: async () => {
          if (isNew) return null;
-         return restGetExpensePlan({ expense_plan_id: id });
+         return restGetExpensePlanRecord({ expense_plan_id: id });
       },
    });
 
@@ -35,29 +33,27 @@ export function ExpensePlanDetails() {
       try {
          setLoadingMutation(true);
          if (isNew) {
-            const res = await restCreateExpensePlan({
+            const res = await restCreateExpensePlanRecord({
                title: values.title,
                category: values.category,
                amount_planned: decimalToCents(values.amount_planned),
                recurrency_type: values.recurrency_type,
-               recurrency_interval: values.recurrency_interval,
             });
-            noti.success({ message: 'Planejamento de despesas criado com sucesso. Redirecionando...' });
+            noti.success({ message: 'Despesa registrada com sucesso. Redirecionando...' });
             navigate(`/expense-plans/${res.expense_plan_id}`);
 
             return;
          }
 
-         await restUpdateExpensePlan({
+         await restUpdateExpensePlanRecord({
             expense_plan_id: id,
             title: values.title,
             category: values.category,
             amount_planned: decimalToCents(values.amount_planned),
             recurrency_type: values.recurrency_type,
-            recurrency_interval: values.recurrency_interval,
          });
          refetch();
-         noti.success({ message: 'Planejamento de despesas atualizado com sucesso.' });
+         noti.success({ message: 'Despesa atualizada com sucesso.' });
 
          return;
       } catch (error) {
@@ -73,7 +69,7 @@ export function ExpensePlanDetails() {
          <div className='flex flex-row gap-2 items-center'>
             <GoBackButton />
             <h1 className="font-semibold text-2xl">
-               {isNew ? 'Novo Planejamento Despesas' : `Planejamento Despesas #${id}`}
+               {isNew ? 'Nova Despesa' : `Despesa #${id}`}
             </h1>
          </div>
 
@@ -100,7 +96,7 @@ export function ExpensePlanDetails() {
 
                   <Form.Item name="category" label="Categoria" rules={[{ required: true, message: 'Campo obrigatório' }]}>
                      <Select value={data?.category}>
-                        {Object.entries(QueryExpensePlanCategory).map(([, value]) => (
+                        {Object.entries(QueryExpensePlanRecordCategory).map(([, value]) => (
                            <Select.Option key={value} value={value}>
                               {value}
                            </Select.Option>
@@ -108,7 +104,7 @@ export function ExpensePlanDetails() {
                      </Select>
                   </Form.Item>
 
-                  <Form.Item name="amount_planned" label="Gasto Planejado" rules={[{ required: true }]}>
+                  <Form.Item name="amount_planned" label="Gasto PlanRecordejado" rules={[{ required: true }]}>
                      <InputNumber decimalSeparator=',' precision={2} className="w-full" />
                   </Form.Item>
 

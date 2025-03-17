@@ -103,8 +103,6 @@ type ExpensePlan struct {
 	ExpensePlanID      int32
 	Title              string
 	AmountPlanned      int32
-	FirstPaymentDate   pgtype.Timestamptz
-	LastPaymentDate    pgtype.Timestamptz
 	LastPaidDate       pgtype.Timestamptz
 	LastAmountSpent    int32
 	PaidCount          int32
@@ -113,17 +111,16 @@ type ExpensePlan struct {
 	Category           ExpensePlanCategory
 	CreatedAt          pgtype.Timestamptz
 	UpdatedAt          pgtype.Timestamptz
+	FirstPaidDate      pgtype.Timestamptz
 }
 
 type ExpensePlanRecord struct {
-	ExpensePlanRecordID   int32
-	ExpensePlanID         int32
-	AmountPaid            int32
-	PaymentDate           pgtype.Timestamptz
-	PaidDate              pgtype.Timestamptz
-	ExpensePlanSequence   int32
-	PreviousPaymentAmount pgtype.Int4
-	PreviousPaymentDate   pgtype.Timestamptz
-	CreatedAt             pgtype.Timestamptz
-	UpdatedAt             pgtype.Timestamptz
+	ExpensePlanRecordID int32
+	ExpensePlanID       int32
+	AmountPaid          int32
+	PaymentDate         pgtype.Timestamptz
+	PaidDate            pgtype.Timestamptz
+	ExpensePlanSequence int32
+	CreatedAt           pgtype.Timestamptz
+	UpdatedAt           pgtype.Timestamptz
 }

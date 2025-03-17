@@ -10,6 +10,7 @@ INSERT INTO expense_plan (
    category,
    amount_planned,
    recurrency_type,
+   recurrency_interval,
    created_at,
    updated_at
 ) VALUES (
@@ -17,6 +18,7 @@ INSERT INTO expense_plan (
    sqlc.narg('category'),
    sqlc.arg('amount_planned'),
    sqlc.arg('recurrency_type'),
+   sqlc.arg('recurrency_interval'),
    NOW(),
    NOW()
 )
@@ -28,6 +30,7 @@ UPDATE expense_plan SET
    category = sqlc.narg('category'),
    amount_planned = sqlc.arg('amount_planned'),
    recurrency_type = sqlc.arg('recurrency_type'),
+   recurrency_interval = sqlc.arg('recurrency_interval'),
    updated_at = NOW()
 WHERE expense_plan_id = sqlc.arg('expense_plan_id')
 RETURNING *;
@@ -45,3 +48,58 @@ SELECT
    ep.recurrency_interval as expense_plan_recurrency_interval
 FROM expense_plan_record rec
 LEFT JOIN expense_plan ep ON rec.expense_plan_id = ep.expense_plan_id;
+
+-- name: GetExpensePlanRecord :one
+SELECT 
+   rec.*,
+   ep.title as expense_plan_title,
+   ep.category as expense_plan_category,
+   ep.amount_planned as expense_plan_amount_planned,
+   ep.recurrency_type as expense_plan_recurrency_type,
+   ep.recurrency_interval as expense_plan_recurrency_interval
+FROM expense_plan_record rec
+LEFT JOIN expense_plan ep ON rec.expense_plan_id = ep.expense_plan_id
+WHERE rec.expense_plan_record_id = sqlc.arg('expense_plan_record_id');
+
+-- name: CreateExpensePlanRecord :one
+INSERT INTO expense_plan_record (
+   expense_plan_id,
+   amount_paid,
+   payment_date,
+   paid_date,
+   expense_plan_sequence,
+   created_at,
+   updated_at
+) VALUES (
+   sqlc.arg('expense_plan_id'),
+   sqlc.arg('amount_paid'),
+   sqlc.arg('payment_date'),
+   sqlc.arg('paid_date'),
+   sqlc.arg('expense_plan_sequence'),
+   NOW(),
+   NOW()
+)
+RETURNING *;
+
+-- name: UpdateExpensePlanAfterRecord :one
+UPDATE expense_plan SET
+   first_paid_date = COALESCE(first_paid_date, sqlc.arg('paid_date')),
+   last_paid_date = COALESCE(last_paid_date, sqlc.arg('paid_date')),
+   last_amount_spent = COALESCE(last_amount_spent, sqlc.arg('amount_paid')),
+   paid_count = sqlc.arg('paid_count'),
+   updated_at = NOW()
+WHERE expense_plan_id = sqlc.arg('expense_plan_id')
+RETURNING *;
+
+-- name: UpdateExpensePlanRecord :one
+UPDATE expense_plan_record SET
+   amount_paid = sqlc.arg('amount_paid'),
+   payment_date = sqlc.arg('payment_date'),
+   paid_date = sqlc.arg('paid_date'),
+   expense_plan_sequence = sqlc.arg('expense_plan_sequence'),
+   updated_at = NOW()
+WHERE expense_plan_record_id = sqlc.arg('expense_plan_record_id')
+RETURNING *;
+
+-- name: DeleteExpensePlanRecord :execrows
+DELETE FROM expense_plan_record WHERE expense_plan_record_id = sqlc.arg('expense_plan_record_id');

@@ -15,6 +15,72 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/expense-plan-record/delete": {
+            "post": {
+                "description": "Delete expense-plan-record item",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ExpensePlanRecords"
+                ],
+                "summary": "Delete expense-plan-record item",
+                "parameters": [
+                    {
+                        "description": "DeleteExpensePlanRecordsRequest",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/handler.DeleteExpensePlanRecordsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.DeleteExpensePlanRecordsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/expense-plan-record/get": {
+            "post": {
+                "description": "Get all expense-plan-record items (using cursor-based pagination)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ExpensePlanRecord"
+                ],
+                "summary": "Get all expense-plan-record items",
+                "parameters": [
+                    {
+                        "description": "GetExpensePlanRecordRequest",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/handler.GetExpensePlanRecordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.GetExpensePlanRecordResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/expense-plan-record/list": {
             "post": {
                 "description": "List all expense-plan-record items (using cursor-based pagination)",
@@ -229,6 +295,9 @@ const docTemplate = `{
                 "category": {
                     "$ref": "#/definitions/query.ExpensePlanCategory"
                 },
+                "recurrency_interval": {
+                    "type": "integer"
+                },
                 "recurrency_type": {
                     "$ref": "#/definitions/query.RecurrencyType"
                 },
@@ -245,6 +314,20 @@ const docTemplate = `{
                 }
             }
         },
+        "handler.DeleteExpensePlanRecordsRequest": {
+            "type": "object",
+            "required": [
+                "expense_plan_record_id"
+            ],
+            "properties": {
+                "expense_plan_record_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.DeleteExpensePlanRecordsResponse": {
+            "type": "object"
+        },
         "handler.DeleteExpensePlanRequest": {
             "type": "object",
             "required": [
@@ -258,6 +341,72 @@ const docTemplate = `{
         },
         "handler.DeleteExpensePlanResponse": {
             "type": "object"
+        },
+        "handler.GetExpensePlanRecordRequest": {
+            "type": "object",
+            "required": [
+                "expense_plan_id"
+            ],
+            "properties": {
+                "expense_plan_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "handler.GetExpensePlanRecordResponse": {
+            "type": "object",
+            "properties": {
+                "amount_paid": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "expense_plan": {
+                    "$ref": "#/definitions/handler.GetExpensePlanRecordResponse_ExpensePlan"
+                },
+                "expense_plan_id": {
+                    "type": "integer"
+                },
+                "expense_plan_record_id": {
+                    "type": "integer"
+                },
+                "expense_plan_sequence": {
+                    "type": "integer"
+                },
+                "paid_date": {
+                    "type": "string"
+                },
+                "payment_date": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.GetExpensePlanRecordResponse_ExpensePlan": {
+            "type": "object",
+            "properties": {
+                "amount_planned": {
+                    "type": "integer"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "expense_plan_id": {
+                    "type": "integer"
+                },
+                "recurrency_interval": {
+                    "type": "integer"
+                },
+                "recurrency_type": {
+                    "$ref": "#/definitions/query.RecurrencyType"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
         },
         "handler.GetExpensePlanRequest": {
             "type": "object",
@@ -285,16 +434,13 @@ const docTemplate = `{
                 "expense_plan_id": {
                     "type": "integer"
                 },
-                "first_payment_date": {
+                "first_paid_date": {
                     "type": "string"
                 },
                 "last_amount_spent": {
                     "type": "integer"
                 },
                 "last_paid_date": {
-                    "type": "string"
-                },
-                "last_payment_date": {
                     "type": "string"
                 },
                 "paid_count": {
@@ -378,12 +524,6 @@ const docTemplate = `{
                 "payment_date": {
                     "type": "string"
                 },
-                "previous_payment_amount": {
-                    "type": "integer"
-                },
-                "previous_payment_date": {
-                    "type": "string"
-                },
                 "updated_at": {
                     "type": "string"
                 }
@@ -418,16 +558,13 @@ const docTemplate = `{
                 "expense_plan_id": {
                     "type": "integer"
                 },
-                "first_payment_date": {
+                "first_paid_date": {
                     "type": "string"
                 },
                 "last_amount_spent": {
                     "type": "integer"
                 },
                 "last_paid_date": {
-                    "type": "string"
-                },
-                "last_payment_date": {
                     "type": "string"
                 },
                 "paid_count": {
@@ -463,6 +600,9 @@ const docTemplate = `{
                     "$ref": "#/definitions/query.ExpensePlanCategory"
                 },
                 "expense_plan_id": {
+                    "type": "integer"
+                },
+                "recurrency_interval": {
                     "type": "integer"
                 },
                 "recurrency_type": {

@@ -8,8 +8,12 @@
 import type {
   HandlerCreateExpensePlanRequest,
   HandlerCreateExpensePlanResponse,
+  HandlerDeleteExpensePlanRecordsRequest,
+  HandlerDeleteExpensePlanRecordsResponse,
   HandlerDeleteExpensePlanRequest,
   HandlerDeleteExpensePlanResponse,
+  HandlerGetExpensePlanRecordRequest,
+  HandlerGetExpensePlanRecordResponse,
   HandlerGetExpensePlanRequest,
   HandlerGetExpensePlanResponse,
   HandlerListExpensePlanRecordRequest,
@@ -19,6 +23,92 @@ import type {
   HandlerUpdateExpensePlanRequest,
   HandlerUpdateExpensePlanResponse
 } from './generated.schemas';
+
+
+/**
+ * Delete expense-plan-record item
+ * @summary Delete expense-plan-record item
+ */
+export type postExpensePlanRecordDeleteResponse200 = {
+  data: HandlerDeleteExpensePlanRecordsResponse
+  status: 200
+}
+    
+export type postExpensePlanRecordDeleteResponseComposite = postExpensePlanRecordDeleteResponse200;
+    
+export type postExpensePlanRecordDeleteResponse = postExpensePlanRecordDeleteResponseComposite & {
+  headers: Headers;
+}
+
+export const getPostExpensePlanRecordDeleteUrl = () => {
+
+
+  
+
+  return `/expense-plan-record/delete`
+}
+
+export const postExpensePlanRecordDelete = async (handlerDeleteExpensePlanRecordsRequest: HandlerDeleteExpensePlanRecordsRequest, options?: RequestInit): Promise<postExpensePlanRecordDeleteResponse> => {
+  
+  const res = await fetch(getPostExpensePlanRecordDeleteUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      handlerDeleteExpensePlanRecordsRequest,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+  const data: postExpensePlanRecordDeleteResponse['data'] = body ? JSON.parse(body) : {}
+
+  return { data, status: res.status, headers: res.headers } as postExpensePlanRecordDeleteResponse
+}
+
+
+
+/**
+ * Get all expense-plan-record items (using cursor-based pagination)
+ * @summary Get all expense-plan-record items
+ */
+export type postExpensePlanRecordGetResponse200 = {
+  data: HandlerGetExpensePlanRecordResponse
+  status: 200
+}
+    
+export type postExpensePlanRecordGetResponseComposite = postExpensePlanRecordGetResponse200;
+    
+export type postExpensePlanRecordGetResponse = postExpensePlanRecordGetResponseComposite & {
+  headers: Headers;
+}
+
+export const getPostExpensePlanRecordGetUrl = () => {
+
+
+  
+
+  return `/expense-plan-record/get`
+}
+
+export const postExpensePlanRecordGet = async (handlerGetExpensePlanRecordRequest: HandlerGetExpensePlanRecordRequest, options?: RequestInit): Promise<postExpensePlanRecordGetResponse> => {
+  
+  const res = await fetch(getPostExpensePlanRecordGetUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      handlerGetExpensePlanRecordRequest,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+  const data: postExpensePlanRecordGetResponse['data'] = body ? JSON.parse(body) : {}
+
+  return { data, status: res.status, headers: res.headers } as postExpensePlanRecordGetResponse
+}
+
 
 
 /**

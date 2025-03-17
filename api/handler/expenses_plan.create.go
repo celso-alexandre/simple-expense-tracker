@@ -11,10 +11,11 @@ import (
 )
 
 type CreateExpensePlanRequest struct {
-	Title          string                    `json:"title" validate:"required"`
-	Category       query.ExpensePlanCategory `json:"category" validate:"required"`
-	AmountPlanned  uint32                    `json:"amount_planned" validate:"required"`
-	RecurrencyType *query.RecurrencyType     `json:"recurrency_type,omitempty"`
+	Title              string                    `json:"title" validate:"required"`
+	Category           query.ExpensePlanCategory `json:"category" validate:"required"`
+	AmountPlanned      uint32                    `json:"amount_planned" validate:"required"`
+	RecurrencyType     *query.RecurrencyType     `json:"recurrency_type,omitempty"`
+	RecurrencyInterval uint32                    `json:"recurrency_interval,omitempty"`
 }
 
 type CreateExpensePlanResponse struct {
@@ -70,10 +71,11 @@ func CreateExpensePlan(w http.ResponseWriter, r *http.Request) {
 		recurrencyType.RecurrencyType = *req.RecurrencyType
 	}
 	item, err := q.CreateExpensePlan(ctx, query.CreateExpensePlanParams{
-		Title:          req.Title,
-		Category:       query.NullExpensePlanCategory{Valid: true, ExpensePlanCategory: req.Category},
-		AmountPlanned:  int32(req.AmountPlanned),
-		RecurrencyType: recurrencyType,
+		Title:              req.Title,
+		Category:           query.NullExpensePlanCategory{Valid: true, ExpensePlanCategory: req.Category},
+		AmountPlanned:      int32(req.AmountPlanned),
+		RecurrencyType:     recurrencyType,
+		RecurrencyInterval: int32(req.RecurrencyInterval),
 	})
 	if err != nil {
 		msg := fmt.Sprintf("failed to create expense plan: %v", err)
