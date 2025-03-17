@@ -1,10 +1,13 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { Form, Input, InputNumber, Select, Button, Skeleton } from 'antd';
+import { Form, InputNumber, Button, Skeleton, DatePicker } from 'antd';
 import { useState } from 'react';
 import { centsToDecimal, decimalToCents } from '../../../util/brlFormat';
 import useNotification from 'antd/es/notification/useNotification';
 import { GoBackButton } from '../../../components/go-back-button';
+import { parseDateOrNull } from '../../../util/formatDate';
+import { SelectExpensePlans } from '../../../components/select-expense-plans';
+import { restCreateExpensePlanRecord, restGetExpensePlanRecord, restUpdateExpensePlanRecord } from '../../../util/api';
 
 export function ExpensePlanRecordDetails() {
    const { ID } = useParams();
@@ -24,7 +27,6 @@ export function ExpensePlanRecordDetails() {
    const [noti, notiCtx] = useNotification();
 
    const [form] = Form.useForm<typeof data>();
-   const recurrencyType = Form.useWatch('recurrency_type', form);
 
    async function onFinish(values: typeof data) {
       console.log('onFinish', values);
@@ -34,23 +36,23 @@ export function ExpensePlanRecordDetails() {
          setLoadingMutation(true);
          if (isNew) {
             const res = await restCreateExpensePlanRecord({
-               title: values.title,
-               category: values.category,
-               amount_planned: decimalToCents(values.amount_planned),
-               recurrency_type: values.recurrency_type,
+               expense_plan_id: values.expense_plan_id,
+               amount_paid: decimalToCents(values.amount_paid),
+               payment_date: values.payment_date,
+               paid_date: values.paid_date,
             });
             noti.success({ message: 'Despesa registrada com sucesso. Redirecionando...' });
-            navigate(`/expense-plans/${res.expense_plan_id}`);
+            navigate(`/expense-plan-records/${res.expense_plan_record_id}`);
 
             return;
          }
 
          await restUpdateExpensePlanRecord({
-            expense_plan_id: id,
-            title: values.title,
-            category: values.category,
-            amount_planned: decimalToCents(values.amount_planned),
-            recurrency_type: values.recurrency_type,
+            expense_plan_record_id: id,
+            expense_plan_id: values.expense_plan_id,
+            amount_paid: decimalToCents(values.amount_paid),
+            payment_date: values.payment_date,
+            paid_date: values.paid_date,
          });
          refetch();
          noti.success({ message: 'Despesa atualizada com sucesso.' });
@@ -83,49 +85,31 @@ export function ExpensePlanRecordDetails() {
                   layout="vertical"
                   initialValues={{
                      ...data,
-                     category: data?.category || '',
-                     recurrency_type: data?.recurrency_type || '',
-                     amount_planned: centsToDecimal(data?.amount_planned),
-                     last_amount_spent: centsToDecimal(data?.last_amount_spent),
+                     amount_paid: centsToDecimal(data?.amount_paid),
+                     payment_date: parseDateOrNull(data?.payment_date),
+                     paid_date: parseDateOrNull(data?.paid_date),
+                     expense_plan_sequence: data?.expense_plan_sequence || 1,
                   }}
                   className="grid grid-cols-2 gap-4"
                >
-                  <Form.Item name="title" label="Título" rules={[{ required: true, message: 'Campo obrigatório' }]}>
-                     <Input />
+                  <Form.Item name="expense_plan_id" label="Planejamento Despesa" rules={[{ required: true, message: 'Campo obrigatório' }]}>
+                     <SelectExpensePlans />
                   </Form.Item>
 
-                  <Form.Item name="category" label="Categoria" rules={[{ required: true, message: 'Campo obrigatório' }]}>
-                     <Select value={data?.category}>
-                        {Object.entries(QueryExpensePlanRecordCategory).map(([, value]) => (
-                           <Select.Option key={value} value={value}>
-                              {value}
-                           </Select.Option>
-                        ))}
-                     </Select>
-                  </Form.Item>
-
-                  <Form.Item name="amount_planned" label="Gasto PlanRecordejado" rules={[{ required: true }]}>
+                  <Form.Item name="amount_paid" label="Gasto" rules={[{ required: true }]}>
                      <InputNumber decimalSeparator=',' precision={2} className="w-full" />
                   </Form.Item>
 
-                  <Form.Item name="last_amount_spent" label="Último Gasto">
-                     <InputNumber decimalSeparator=',' precision={2} disabled className="w-full" />
+                  <Form.Item name="payment_date" label="Data">
+                     <DatePicker />
                   </Form.Item>
 
-                  <Form.Item name="recurrency_type" label="Recorrência">
-                     <Select>
-                        <Select.Option value="">Única</Select.Option>
-                        <Select.Option value="MONTHLY">Mensal</Select.Option>
-                        <Select.Option value="YEARLY">Anual</Select.Option>
-                     </Select>
+                  <Form.Item name="paid_date" label="Data Pagamento">
+                     <DatePicker />
                   </Form.Item>
 
-                  <Form.Item name="paid_count" label="Parcelas quitadas">
+                  <Form.Item name="expense_plan_sequence" label="Parcela">
                      <InputNumber disabled className="w-full" />
-                  </Form.Item>
-
-                  <Form.Item name="recurrency_interval" label="Parcelas totais" rules={[{ required: !!recurrencyType, message: 'Campo obrigatório' }]}>
-                     <InputNumber disabled={!recurrencyType} className="w-full" />
                   </Form.Item>
 
                   <div className="col-span-2 flex justify-end gap-4">

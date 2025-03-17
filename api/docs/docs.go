@@ -15,6 +15,39 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/expense-plan-record/create": {
+            "post": {
+                "description": "Create expense-plan-record item",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ExpensePlanRecord"
+                ],
+                "summary": "Create expense-plan-record item",
+                "parameters": [
+                    {
+                        "description": "CreateExpensePlanRecordRequest",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateExpensePlanRecordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.CreateExpensePlanRecordResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/expense-plan-record/delete": {
             "post": {
                 "description": "Delete expense-plan-record item",
@@ -109,6 +142,39 @@ const docTemplate = `{
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/handler.ListExpensePlanRecordResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/expense-plan-record/update": {
+            "post": {
+                "description": "Update expense-plan-record item",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ExpensePlanRecord"
+                ],
+                "summary": "Update expense-plan-record item",
+                "parameters": [
+                    {
+                        "description": "UpdateExpensePlanRecordRequest",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/handler.UpdateExpensePlanRecordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.UpdateExpensePlanRecordResponse"
                         }
                     }
                 }
@@ -281,6 +347,31 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "handler.CreateExpensePlanRecordRequest": {
+            "type": "object",
+            "properties": {
+                "amount_paid": {
+                    "type": "integer"
+                },
+                "expense_plan_id": {
+                    "type": "integer"
+                },
+                "paid_date": {
+                    "type": "string"
+                },
+                "payment_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.CreateExpensePlanRecordResponse": {
+            "type": "object",
+            "properties": {
+                "expense_plan_record_id": {
+                    "type": "integer"
+                }
+            }
+        },
         "handler.CreateExpensePlanRequest": {
             "type": "object",
             "required": [
@@ -581,6 +672,34 @@ const docTemplate = `{
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "handler.UpdateExpensePlanRecordRequest": {
+            "type": "object",
+            "properties": {
+                "amount_paid": {
+                    "type": "integer"
+                },
+                "expense_plan_id": {
+                    "type": "integer"
+                },
+                "expense_plan_record_id": {
+                    "type": "integer"
+                },
+                "paid_date": {
+                    "type": "string"
+                },
+                "payment_date": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.UpdateExpensePlanRecordResponse": {
+            "type": "object",
+            "properties": {
+                "expense_plan_record_id": {
+                    "type": "integer"
                 }
             }
         },

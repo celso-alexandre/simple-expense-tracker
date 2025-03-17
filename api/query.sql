@@ -75,7 +75,14 @@ INSERT INTO expense_plan_record (
    sqlc.arg('amount_paid'),
    sqlc.arg('payment_date'),
    sqlc.arg('paid_date'),
-   sqlc.arg('expense_plan_sequence'),
+   COALESCE((
+      SELECT r.expense_plan_sequence
+      FROM expense_plan_record r
+      WHERE r.expense_plan_id = sqlc.arg('expense_plan_id')
+      AND r.payment_date      < sqlc.arg('payment_date')
+      ORDER BY r.payment_date DESC
+      LIMIT 1
+   ), 0) + 1,
    NOW(),
    NOW()
 )
@@ -93,10 +100,18 @@ RETURNING *;
 
 -- name: UpdateExpensePlanRecord :one
 UPDATE expense_plan_record SET
+   expense_plan_id = sqlc.arg('expense_plan_id'),
    amount_paid = sqlc.arg('amount_paid'),
    payment_date = sqlc.arg('payment_date'),
    paid_date = sqlc.arg('paid_date'),
-   expense_plan_sequence = sqlc.arg('expense_plan_sequence'),
+   expense_plan_sequence = COALESCE((
+      SELECT r.expense_plan_sequence
+      FROM expense_plan_record r
+      WHERE r.expense_plan_id = sqlc.arg('expense_plan_id')
+      AND r.payment_date      < sqlc.arg('payment_date')
+      ORDER BY r.payment_date DESC
+      LIMIT 1
+   ), 0) + 1,
    updated_at = NOW()
 WHERE expense_plan_record_id = sqlc.arg('expense_plan_record_id')
 RETURNING *;

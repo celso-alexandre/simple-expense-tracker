@@ -6,6 +6,8 @@
  * OpenAPI spec version: 1.0
  */
 import type {
+  HandlerCreateExpensePlanRecordRequest,
+  HandlerCreateExpensePlanRecordResponse,
   HandlerCreateExpensePlanRequest,
   HandlerCreateExpensePlanResponse,
   HandlerDeleteExpensePlanRecordsRequest,
@@ -20,9 +22,54 @@ import type {
   HandlerListExpensePlanRecordResponse,
   HandlerListExpensePlanRequest,
   HandlerListExpensePlanResponse,
+  HandlerUpdateExpensePlanRecordRequest,
+  HandlerUpdateExpensePlanRecordResponse,
   HandlerUpdateExpensePlanRequest,
   HandlerUpdateExpensePlanResponse
 } from './generated.schemas';
+
+
+/**
+ * Create expense-plan-record item
+ * @summary Create expense-plan-record item
+ */
+export type postExpensePlanRecordCreateResponse200 = {
+  data: HandlerCreateExpensePlanRecordResponse
+  status: 200
+}
+    
+export type postExpensePlanRecordCreateResponseComposite = postExpensePlanRecordCreateResponse200;
+    
+export type postExpensePlanRecordCreateResponse = postExpensePlanRecordCreateResponseComposite & {
+  headers: Headers;
+}
+
+export const getPostExpensePlanRecordCreateUrl = () => {
+
+
+  
+
+  return `/expense-plan-record/create`
+}
+
+export const postExpensePlanRecordCreate = async (handlerCreateExpensePlanRecordRequest: HandlerCreateExpensePlanRecordRequest, options?: RequestInit): Promise<postExpensePlanRecordCreateResponse> => {
+  
+  const res = await fetch(getPostExpensePlanRecordCreateUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      handlerCreateExpensePlanRecordRequest,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+  const data: postExpensePlanRecordCreateResponse['data'] = body ? JSON.parse(body) : {}
+
+  return { data, status: res.status, headers: res.headers } as postExpensePlanRecordCreateResponse
+}
+
 
 
 /**
@@ -150,6 +197,49 @@ export const postExpensePlanRecordList = async (handlerListExpensePlanRecordRequ
   const data: postExpensePlanRecordListResponse['data'] = body ? JSON.parse(body) : {}
 
   return { data, status: res.status, headers: res.headers } as postExpensePlanRecordListResponse
+}
+
+
+
+/**
+ * Update expense-plan-record item
+ * @summary Update expense-plan-record item
+ */
+export type postExpensePlanRecordUpdateResponse200 = {
+  data: HandlerUpdateExpensePlanRecordResponse
+  status: 200
+}
+    
+export type postExpensePlanRecordUpdateResponseComposite = postExpensePlanRecordUpdateResponse200;
+    
+export type postExpensePlanRecordUpdateResponse = postExpensePlanRecordUpdateResponseComposite & {
+  headers: Headers;
+}
+
+export const getPostExpensePlanRecordUpdateUrl = () => {
+
+
+  
+
+  return `/expense-plan-record/update`
+}
+
+export const postExpensePlanRecordUpdate = async (handlerUpdateExpensePlanRecordRequest: HandlerUpdateExpensePlanRecordRequest, options?: RequestInit): Promise<postExpensePlanRecordUpdateResponse> => {
+  
+  const res = await fetch(getPostExpensePlanRecordUpdateUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      handlerUpdateExpensePlanRecordRequest,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+  const data: postExpensePlanRecordUpdateResponse['data'] = body ? JSON.parse(body) : {}
+
+  return { data, status: res.status, headers: res.headers } as postExpensePlanRecordUpdateResponse
 }
 
 

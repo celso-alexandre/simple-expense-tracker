@@ -80,7 +80,14 @@ INSERT INTO expense_plan_record (
    $2,
    $3,
    $4,
-   $5,
+   COALESCE((
+      SELECT r.expense_plan_sequence
+      FROM expense_plan_record r
+      WHERE r.expense_plan_id = $1
+      AND r.payment_date      < $3
+      ORDER BY r.payment_date DESC
+      LIMIT 1
+   ), 0) + 1,
    NOW(),
    NOW()
 )
@@ -88,11 +95,10 @@ RETURNING expense_plan_record_id, expense_plan_id, amount_paid, payment_date, pa
 `
 
 type CreateExpensePlanRecordParams struct {
-	ExpensePlanID       int32
-	AmountPaid          int32
-	PaymentDate         pgtype.Timestamptz
-	PaidDate            pgtype.Timestamptz
-	ExpensePlanSequence int32
+	ExpensePlanID int32
+	AmountPaid    int32
+	PaymentDate   pgtype.Timestamptz
+	PaidDate      pgtype.Timestamptz
 }
 
 func (q *Queries) CreateExpensePlanRecord(ctx context.Context, arg CreateExpensePlanRecordParams) (ExpensePlanRecord, error) {
@@ -101,7 +107,6 @@ func (q *Queries) CreateExpensePlanRecord(ctx context.Context, arg CreateExpense
 		arg.AmountPaid,
 		arg.PaymentDate,
 		arg.PaidDate,
-		arg.ExpensePlanSequence,
 	)
 	var i ExpensePlanRecord
 	err := row.Scan(
@@ -407,29 +412,37 @@ func (q *Queries) UpdateExpensePlanAfterRecord(ctx context.Context, arg UpdateEx
 
 const updateExpensePlanRecord = `-- name: UpdateExpensePlanRecord :one
 UPDATE expense_plan_record SET
-   amount_paid = $1,
-   payment_date = $2,
-   paid_date = $3,
-   expense_plan_sequence = $4,
+   expense_plan_id = $1,
+   amount_paid = $2,
+   payment_date = $3,
+   paid_date = $4,
+   expense_plan_sequence = COALESCE((
+      SELECT r.expense_plan_sequence
+      FROM expense_plan_record r
+      WHERE r.expense_plan_id = $1
+      AND r.payment_date      < $3
+      ORDER BY r.payment_date DESC
+      LIMIT 1
+   ), 0) + 1,
    updated_at = NOW()
 WHERE expense_plan_record_id = $5
 RETURNING expense_plan_record_id, expense_plan_id, amount_paid, payment_date, paid_date, expense_plan_sequence, created_at, updated_at
 `
 
 type UpdateExpensePlanRecordParams struct {
-	AmountPaid          int32
+	ExpensePlanID       pgtype.Int4
+	AmountPaid          pgtype.Int4
 	PaymentDate         pgtype.Timestamptz
 	PaidDate            pgtype.Timestamptz
-	ExpensePlanSequence int32
-	ExpensePlanRecordID int32
+	ExpensePlanRecordID pgtype.Int4
 }
 
 func (q *Queries) UpdateExpensePlanRecord(ctx context.Context, arg UpdateExpensePlanRecordParams) (ExpensePlanRecord, error) {
 	row := q.db.QueryRow(ctx, updateExpensePlanRecord,
+		arg.ExpensePlanID,
 		arg.AmountPaid,
 		arg.PaymentDate,
 		arg.PaidDate,
-		arg.ExpensePlanSequence,
 		arg.ExpensePlanRecordID,
 	)
 	var i ExpensePlanRecord

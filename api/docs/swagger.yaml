@@ -1,5 +1,21 @@
 basePath: /api/v1
 definitions:
+  handler.CreateExpensePlanRecordRequest:
+    properties:
+      amount_paid:
+        type: integer
+      expense_plan_id:
+        type: integer
+      paid_date:
+        type: string
+      payment_date:
+        type: string
+    type: object
+  handler.CreateExpensePlanRecordResponse:
+    properties:
+      expense_plan_record_id:
+        type: integer
+    type: object
   handler.CreateExpensePlanRequest:
     properties:
       amount_planned:
@@ -198,6 +214,24 @@ definitions:
       updated_at:
         type: string
     type: object
+  handler.UpdateExpensePlanRecordRequest:
+    properties:
+      amount_paid:
+        type: integer
+      expense_plan_id:
+        type: integer
+      expense_plan_record_id:
+        type: integer
+      paid_date:
+        type: string
+      payment_date:
+        type: string
+    type: object
+  handler.UpdateExpensePlanRecordResponse:
+    properties:
+      expense_plan_record_id:
+        type: integer
+    type: object
   handler.UpdateExpensePlanRequest:
     properties:
       amount_planned:
@@ -254,6 +288,27 @@ info:
   title: My API
   version: "1.0"
 paths:
+  /expense-plan-record/create:
+    post:
+      consumes:
+      - application/json
+      description: Create expense-plan-record item
+      parameters:
+      - description: CreateExpensePlanRecordRequest
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/handler.CreateExpensePlanRecordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.CreateExpensePlanRecordResponse'
+      summary: Create expense-plan-record item
+      tags:
+      - ExpensePlanRecord
   /expense-plan-record/delete:
     post:
       consumes:
@@ -315,6 +370,27 @@ paths:
           schema:
             $ref: '#/definitions/handler.ListExpensePlanRecordResponse'
       summary: List all expense-plan-record items
+      tags:
+      - ExpensePlanRecord
+  /expense-plan-record/update:
+    post:
+      consumes:
+      - application/json
+      description: Update expense-plan-record item
+      parameters:
+      - description: UpdateExpensePlanRecordRequest
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/handler.UpdateExpensePlanRecordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.UpdateExpensePlanRecordResponse'
+      summary: Update expense-plan-record item
       tags:
       - ExpensePlanRecord
   /expense-plan/create:

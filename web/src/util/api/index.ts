@@ -2,8 +2,8 @@
 /* eslint-disable no-useless-catch */
 import { Config } from '../../config';
 import { joinUrl } from '../join-url';
-import { getPostExpensePlanCreateUrl, getPostExpensePlanDeleteUrl, getPostExpensePlanGetUrl, getPostExpensePlanListUrl, getPostExpensePlanRecordDeleteUrl, getPostExpensePlanRecordListUrl, getPostExpensePlanUpdateUrl, postExpensePlanCreateResponse, postExpensePlanGetResponse, postExpensePlanListResponse, postExpensePlanRecordListResponse } from './generated/generated';
-import { HandlerCreateExpensePlanRequest, HandlerDeleteExpensePlanRecordsRequest, HandlerDeleteExpensePlanRequest, HandlerGetExpensePlanRequest, HandlerListExpensePlanRecordRequest, HandlerListExpensePlanRequest, HandlerUpdateExpensePlanRequest } from './generated/generated.schemas';
+import { getPostExpensePlanCreateUrl, getPostExpensePlanDeleteUrl, getPostExpensePlanGetUrl, getPostExpensePlanListUrl, getPostExpensePlanRecordCreateUrl, getPostExpensePlanRecordDeleteUrl, getPostExpensePlanRecordGetUrl, getPostExpensePlanRecordListUrl, getPostExpensePlanRecordUpdateUrl, getPostExpensePlanUpdateUrl, postExpensePlanCreateResponse, postExpensePlanGetResponse, postExpensePlanListResponse, postExpensePlanRecordCreateResponse, postExpensePlanRecordGetResponse, postExpensePlanRecordListResponse } from './generated/generated';
+import { HandlerCreateExpensePlanRecordRequest, HandlerCreateExpensePlanRequest, HandlerDeleteExpensePlanRecordsRequest, HandlerDeleteExpensePlanRequest, HandlerGetExpensePlanRecordRequest, HandlerGetExpensePlanRequest, HandlerListExpensePlanRecordRequest, HandlerListExpensePlanRequest, HandlerUpdateExpensePlanRecordRequest, HandlerUpdateExpensePlanRequest } from './generated/generated.schemas';
 
 const restEndpoint = Config.REST_ENDPOINT;
 
@@ -110,5 +110,34 @@ export async function restDeleteExpensePlanRecord(
   timeout = Config.DEFAULT_REST_TIMEOUT_MS
 ): Promise<void> {
   const url = joinUrl(restEndpoint, getPostExpensePlanRecordDeleteUrl());
+  await defaultPostQuery(url, request, timeout);
+}
+
+
+
+
+export async function restGetExpensePlanRecord(
+  request: HandlerGetExpensePlanRecordRequest,
+  timeout = Config.DEFAULT_REST_TIMEOUT_MS
+): Promise<Required<postExpensePlanRecordGetResponse['data']>> {
+  const url = joinUrl(restEndpoint, getPostExpensePlanRecordGetUrl());
+  const { response } = await defaultPostQuery(url, request, timeout);
+  return response.json();
+}
+
+export async function restCreateExpensePlanRecord(
+  request: HandlerCreateExpensePlanRecordRequest,
+  timeout = Config.DEFAULT_REST_TIMEOUT_MS
+): Promise<Required<postExpensePlanRecordCreateResponse['data']>> {
+  const url = joinUrl(restEndpoint, getPostExpensePlanRecordCreateUrl());
+  const { response } = await defaultPostQuery(url, request, timeout);
+  return response.json();
+}
+
+export async function restUpdateExpensePlanRecord(
+  request: HandlerUpdateExpensePlanRecordRequest,
+  timeout = Config.DEFAULT_REST_TIMEOUT_MS
+): Promise<void> {
+  const url = joinUrl(restEndpoint, getPostExpensePlanRecordUpdateUrl());
   await defaultPostQuery(url, request, timeout);
 }

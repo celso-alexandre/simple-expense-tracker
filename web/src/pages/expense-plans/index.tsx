@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { restDeleteExpensePlan, restListExpensePlan } from '../../util/api';
 import { Button, Table } from 'antd';
 import { centsToCurrency } from '../../util/brlFormat';
-import { formatDate } from '../../util/formatDate';
 import { Link } from 'react-router-dom';
 import { BiPencil, BiTrash } from 'react-icons/bi';
 import useModal from 'antd/es/modal/useModal';
@@ -56,23 +55,23 @@ export function ExpensePlans() {
                         return centsToCurrency(value);
                      }
                   },
-                  {
-                     dataIndex: 'last_amount_spent',
-                     title: 'Último Gasto',
-                     render(value, rec) {
-                        if (!value) return null;
-                        const diff = (rec.amount_planned || 0) - value;
-                        const last = centsToCurrency(value);
-                        if (!diff) return last;
-                        return (
-                           <div className='flex flex-row gap-1'>
-                              <span>{formatDate(rec.last_payment_date)}</span>
-                              <span>{last}</span>
-                              <span className={`${diff < 0 ? 'text-red-500': 'text-green-500'}`}>({centsToCurrency(diff)})</span>
-                           </div>
-                        );
-                     }
-                  },
+                  // {
+                  //    dataIndex: 'last_amount_spent',
+                  //    title: 'Último Gasto',
+                  //    render(value, rec) {
+                  //       if (!value) return null;
+                  //       const diff = (rec.amount_planned || 0) - value;
+                  //       const last = centsToCurrency(value);
+                  //       if (!diff) return last;
+                  //       return (
+                  //          <div className='flex flex-row gap-1'>
+                  //             <span>{formatDate(rec.last_payment_date)}</span>
+                  //             <span>{last}</span>
+                  //             <span className={`${diff < 0 ? 'text-red-500': 'text-green-500'}`}>({centsToCurrency(diff)})</span>
+                  //          </div>
+                  //       );
+                  //    }
+                  // },
                   {
                      dataIndex: 'recurrency_type',
                      title: 'Recorrência',

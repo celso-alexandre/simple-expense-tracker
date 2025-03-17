@@ -5,6 +5,17 @@
  * This is a sample API using Swagger.
  * OpenAPI spec version: 1.0
  */
+export interface HandlerCreateExpensePlanRecordRequest {
+  amount_paid?: number;
+  expense_plan_id?: number;
+  paid_date?: string;
+  payment_date?: string;
+}
+
+export interface HandlerCreateExpensePlanRecordResponse {
+  expense_plan_record_id?: number;
+}
+
 export interface HandlerCreateExpensePlanRequest {
   amount_planned: number;
   category: QueryExpensePlanCategory;
@@ -119,6 +130,18 @@ export interface HandlerListExpensePlanResponseListExpensePlan {
   recurrency_type?: QueryRecurrencyType;
   title?: string;
   updated_at?: string;
+}
+
+export interface HandlerUpdateExpensePlanRecordRequest {
+  amount_paid?: number;
+  expense_plan_id?: number;
+  expense_plan_record_id?: number;
+  paid_date?: string;
+  payment_date?: string;
+}
+
+export interface HandlerUpdateExpensePlanRecordResponse {
+  expense_plan_record_id?: number;
 }
 
 export interface HandlerUpdateExpensePlanRequest {
