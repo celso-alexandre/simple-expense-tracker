@@ -1,11 +1,29 @@
 basePath: /api/v1
 definitions:
+  handler.CreateExpensePlanRecordRequest:
+    properties:
+      amount_paid:
+        type: integer
+      expense_plan_id:
+        type: integer
+      paid_date:
+        type: string
+      payment_date:
+        type: string
+    type: object
+  handler.CreateExpensePlanRecordResponse:
+    properties:
+      expense_plan_record_id:
+        type: integer
+    type: object
   handler.CreateExpensePlanRequest:
     properties:
       amount_planned:
         type: integer
       category:
         $ref: '#/definitions/query.ExpensePlanCategory'
+      recurrency_interval:
+        type: integer
       recurrency_type:
         $ref: '#/definitions/query.RecurrencyType'
       title:
@@ -20,6 +38,15 @@ definitions:
       expense_plan_id:
         type: integer
     type: object
+  handler.DeleteExpensePlanRecordsRequest:
+    properties:
+      expense_plan_record_id:
+        type: integer
+    required:
+    - expense_plan_record_id
+    type: object
+  handler.DeleteExpensePlanRecordsResponse:
+    type: object
   handler.DeleteExpensePlanRequest:
     properties:
       expense_plan_id:
@@ -28,6 +55,49 @@ definitions:
     - expense_plan_id
     type: object
   handler.DeleteExpensePlanResponse:
+    type: object
+  handler.GetExpensePlanRecordRequest:
+    properties:
+      expense_plan_id:
+        type: integer
+    required:
+    - expense_plan_id
+    type: object
+  handler.GetExpensePlanRecordResponse:
+    properties:
+      amount_paid:
+        type: integer
+      created_at:
+        type: string
+      expense_plan:
+        $ref: '#/definitions/handler.GetExpensePlanRecordResponse_ExpensePlan'
+      expense_plan_id:
+        type: integer
+      expense_plan_record_id:
+        type: integer
+      expense_plan_sequence:
+        type: integer
+      paid_date:
+        type: string
+      payment_date:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  handler.GetExpensePlanRecordResponse_ExpensePlan:
+    properties:
+      amount_planned:
+        type: integer
+      category:
+        type: string
+      expense_plan_id:
+        type: integer
+      recurrency_interval:
+        type: integer
+      recurrency_type:
+        $ref: '#/definitions/query.RecurrencyType'
+      title:
+        type: string
     type: object
   handler.GetExpensePlanRequest:
     properties:
@@ -46,13 +116,11 @@ definitions:
         type: string
       expense_plan_id:
         type: integer
-      first_payment_date:
+      first_paid_date:
         type: string
       last_amount_spent:
         type: integer
       last_paid_date:
-        type: string
-      last_payment_date:
         type: string
       paid_count:
         type: integer
@@ -107,10 +175,6 @@ definitions:
         type: string
       payment_date:
         type: string
-      previous_payment_amount:
-        type: integer
-      previous_payment_date:
-        type: string
       updated_at:
         type: string
     type: object
@@ -133,13 +197,11 @@ definitions:
         type: string
       expense_plan_id:
         type: integer
-      first_payment_date:
+      first_paid_date:
         type: string
       last_amount_spent:
         type: integer
       last_paid_date:
-        type: string
-      last_payment_date:
         type: string
       paid_count:
         type: integer
@@ -152,6 +214,24 @@ definitions:
       updated_at:
         type: string
     type: object
+  handler.UpdateExpensePlanRecordRequest:
+    properties:
+      amount_paid:
+        type: integer
+      expense_plan_id:
+        type: integer
+      expense_plan_record_id:
+        type: integer
+      paid_date:
+        type: string
+      payment_date:
+        type: string
+    type: object
+  handler.UpdateExpensePlanRecordResponse:
+    properties:
+      expense_plan_record_id:
+        type: integer
+    type: object
   handler.UpdateExpensePlanRequest:
     properties:
       amount_planned:
@@ -159,6 +239,8 @@ definitions:
       category:
         $ref: '#/definitions/query.ExpensePlanCategory'
       expense_plan_id:
+        type: integer
+      recurrency_interval:
         type: integer
       recurrency_type:
         $ref: '#/definitions/query.RecurrencyType'
@@ -206,6 +288,69 @@ info:
   title: My API
   version: "1.0"
 paths:
+  /expense-plan-record/create:
+    post:
+      consumes:
+      - application/json
+      description: Create expense-plan-record item
+      parameters:
+      - description: CreateExpensePlanRecordRequest
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/handler.CreateExpensePlanRecordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.CreateExpensePlanRecordResponse'
+      summary: Create expense-plan-record item
+      tags:
+      - ExpensePlanRecord
+  /expense-plan-record/delete:
+    post:
+      consumes:
+      - application/json
+      description: Delete expense-plan-record item
+      parameters:
+      - description: DeleteExpensePlanRecordsRequest
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/handler.DeleteExpensePlanRecordsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.DeleteExpensePlanRecordsResponse'
+      summary: Delete expense-plan-record item
+      tags:
+      - ExpensePlanRecords
+  /expense-plan-record/get:
+    post:
+      consumes:
+      - application/json
+      description: Get all expense-plan-record items (using cursor-based pagination)
+      parameters:
+      - description: GetExpensePlanRecordRequest
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/handler.GetExpensePlanRecordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.GetExpensePlanRecordResponse'
+      summary: Get all expense-plan-record items
+      tags:
+      - ExpensePlanRecord
   /expense-plan-record/list:
     post:
       consumes:
@@ -225,6 +370,27 @@ paths:
           schema:
             $ref: '#/definitions/handler.ListExpensePlanRecordResponse'
       summary: List all expense-plan-record items
+      tags:
+      - ExpensePlanRecord
+  /expense-plan-record/update:
+    post:
+      consumes:
+      - application/json
+      description: Update expense-plan-record item
+      parameters:
+      - description: UpdateExpensePlanRecordRequest
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/handler.UpdateExpensePlanRecordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.UpdateExpensePlanRecordResponse'
+      summary: Update expense-plan-record item
       tags:
       - ExpensePlanRecord
   /expense-plan/create:

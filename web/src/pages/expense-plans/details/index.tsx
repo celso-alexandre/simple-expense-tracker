@@ -40,6 +40,7 @@ export function ExpensePlanDetails() {
                category: values.category,
                amount_planned: decimalToCents(values.amount_planned),
                recurrency_type: values.recurrency_type,
+               recurrency_interval: values.recurrency_interval,
             });
             noti.success({ message: 'Planejamento de despesas criado com sucesso. Redirecionando...' });
             navigate(`/expense-plans/${res.expense_plan_id}`);
@@ -53,6 +54,7 @@ export function ExpensePlanDetails() {
             category: values.category,
             amount_planned: decimalToCents(values.amount_planned),
             recurrency_type: values.recurrency_type,
+            recurrency_interval: values.recurrency_interval,
          });
          refetch();
          noti.success({ message: 'Planejamento de despesas atualizado com sucesso.' });

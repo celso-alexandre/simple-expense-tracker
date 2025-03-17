@@ -20,8 +20,7 @@ type GetExpensePlanResponse struct {
 	Category           query.ExpensePlanCategory `json:"category"`
 	AmountPlanned      uint32                    `json:"amount_planned"`
 	LastAmountSpent    uint32                    `json:"last_amount_spent"`
-	FirstPaymentDate   string                    `json:"first_payment_date"`
-	LastPaymentDate    string                    `json:"last_payment_date"`
+	FirstPaidDate      string                    `json:"first_paid_date"`
 	LastPaidDate       string                    `json:"last_paid_date"`
 	PaidCount          uint32                    `json:"paid_count"`
 	RecurrencyType     *query.RecurrencyType     `json:"recurrency_type"`
@@ -87,8 +86,7 @@ func GetExpensePlan(w http.ResponseWriter, r *http.Request) {
 		Title:              dbItem.Title,
 		AmountPlanned:      uint32(dbItem.AmountPlanned),
 		LastAmountSpent:    uint32(dbItem.LastAmountSpent),
-		FirstPaymentDate:   common.PgTimestamptzToISOString(&dbItem.FirstPaymentDate),
-		LastPaymentDate:    common.PgTimestamptzToISOString(&dbItem.LastPaymentDate),
+		FirstPaidDate:      common.PgTimestamptzToISOString(&dbItem.FirstPaidDate),
 		LastPaidDate:       common.PgTimestamptzToISOString(&dbItem.LastPaidDate),
 		PaidCount:          uint32(dbItem.PaidCount),
 		RecurrencyInterval: uint32(dbItem.RecurrencyInterval),

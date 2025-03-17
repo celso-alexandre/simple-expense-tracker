@@ -11,11 +11,12 @@ import (
 )
 
 type UpdateExpensePlanRequest struct {
-	ExpensePlanId  uint32                    `json:"expense_plan_id" validate:"required"`
-	Title          string                    `json:"title" validate:"required"`
-	Category       query.ExpensePlanCategory `json:"category" validate:"required"`
-	AmountPlanned  uint32                    `json:"amount_planned" validate:"required"`
-	RecurrencyType *query.RecurrencyType     `json:"recurrency_type,omitempty"`
+	ExpensePlanId      uint32                    `json:"expense_plan_id" validate:"required"`
+	Title              string                    `json:"title" validate:"required"`
+	Category           query.ExpensePlanCategory `json:"category" validate:"required"`
+	AmountPlanned      uint32                    `json:"amount_planned" validate:"required"`
+	RecurrencyType     *query.RecurrencyType     `json:"recurrency_type,omitempty"`
+	RecurrencyInterval uint32                    `json:"recurrency_interval,omitempty"`
 }
 
 type UpdateExpensePlanResponse struct {
@@ -71,11 +72,12 @@ func UpdateExpensePlan(w http.ResponseWriter, r *http.Request) {
 		recurrencyType.RecurrencyType = *req.RecurrencyType
 	}
 	item, err := q.UpdateExpensePlan(ctx, query.UpdateExpensePlanParams{
-		ExpensePlanID:  int32(req.ExpensePlanId),
-		Title:          req.Title,
-		Category:       query.NullExpensePlanCategory{Valid: true, ExpensePlanCategory: req.Category},
-		AmountPlanned:  int32(req.AmountPlanned),
-		RecurrencyType: recurrencyType,
+		ExpensePlanID:      int32(req.ExpensePlanId),
+		Title:              req.Title,
+		Category:           query.NullExpensePlanCategory{Valid: true, ExpensePlanCategory: req.Category},
+		AmountPlanned:      int32(req.AmountPlanned),
+		RecurrencyType:     recurrencyType,
+		RecurrencyInterval: int32(req.RecurrencyInterval),
 	})
 	if err != nil {
 		msg := fmt.Sprintf("failed to Update expense plan: %v", err)

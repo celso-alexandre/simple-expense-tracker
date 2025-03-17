@@ -22,15 +22,13 @@ type ListExpensePlanRecordResponse_ListExpensePlan struct {
 }
 
 type ListExpensePlanRecordResponse_ListExpensePlanRecord struct {
-	ExpensePlanRecordId   uint32                                         `json:"expense_plan_record_id"`
-	ExpensePlanId         uint32                                         `json:"expense_plan_id"`
-	ExpensePlan           *ListExpensePlanRecordResponse_ListExpensePlan `json:"expense_plan"`
-	AmountPaid            uint32                                         `json:"amount_paid"`
-	PaymentDate           string                                         `json:"payment_date"`
-	PaidDate              string                                         `json:"paid_date"`
-	ExpensePlanSequence   uint32                                         `json:"expense_plan_sequence"`
-	PreviousPaymentAmount uint32                                         `json:"previous_payment_amount"`
-	PreviousPaymentDate   string                                         `json:"previous_payment_date"`
+	ExpensePlanRecordId uint32                                         `json:"expense_plan_record_id"`
+	ExpensePlanId       uint32                                         `json:"expense_plan_id"`
+	ExpensePlan         *ListExpensePlanRecordResponse_ListExpensePlan `json:"expense_plan"`
+	AmountPaid          uint32                                         `json:"amount_paid"`
+	PaymentDate         string                                         `json:"payment_date"`
+	PaidDate            string                                         `json:"paid_date"`
+	ExpensePlanSequence uint32                                         `json:"expense_plan_sequence"`
 
 	CreatedAt string `json:"created_at"`
 	UpdatedAt string `json:"updated_at"`
@@ -78,16 +76,14 @@ func ListExpensePlanRecord(w http.ResponseWriter, r *http.Request) {
 	var items = make([]ListExpensePlanRecordResponse_ListExpensePlanRecord, len(dbItems))
 	for i, item := range dbItems {
 		items[i] = ListExpensePlanRecordResponse_ListExpensePlanRecord{
-			ExpensePlanRecordId:   uint32(item.ExpensePlanRecordID),
-			ExpensePlanId:         uint32(item.ExpensePlanID),
-			AmountPaid:            uint32(item.AmountPaid),
-			PaymentDate:           common.PgTimestamptzToISOString(&item.PaymentDate),
-			PaidDate:              common.PgTimestamptzToISOString(&item.PaidDate),
-			ExpensePlanSequence:   uint32(item.ExpensePlanSequence),
-			PreviousPaymentAmount: uint32(item.PreviousPaymentAmount.Int32),
-			PreviousPaymentDate:   common.PgTimestamptzToISOString(&item.PreviousPaymentDate),
-			CreatedAt:             common.PgTimestamptzToISOString(&item.CreatedAt),
-			UpdatedAt:             common.PgTimestamptzToISOString(&item.UpdatedAt),
+			ExpensePlanRecordId: uint32(item.ExpensePlanRecordID),
+			ExpensePlanId:       uint32(item.ExpensePlanID),
+			AmountPaid:          uint32(item.AmountPaid),
+			PaymentDate:         common.PgTimestamptzToISOString(&item.PaymentDate),
+			PaidDate:            common.PgTimestamptzToISOString(&item.PaidDate),
+			ExpensePlanSequence: uint32(item.ExpensePlanSequence),
+			CreatedAt:           common.PgTimestamptzToISOString(&item.CreatedAt),
+			UpdatedAt:           common.PgTimestamptzToISOString(&item.UpdatedAt),
 			ExpensePlan: &ListExpensePlanRecordResponse_ListExpensePlan{
 				ExpensePlanId:      uint32(item.ExpensePlanID),
 				Title:              item.ExpensePlanTitle.String,

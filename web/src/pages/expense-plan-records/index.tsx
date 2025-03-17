@@ -5,12 +5,14 @@ import { formatDate } from '../../util/formatDate';
 import { Link } from 'react-router-dom';
 import { BiPencil, BiTrash } from 'react-icons/bi';
 import { Config } from '../../config';
-import { restListExpensePlanRecord } from '../../util/api';
+import { restDeleteExpensePlanRecord, restListExpensePlanRecord } from '../../util/api';
+import useModal from 'antd/es/modal/useModal';
+import useNotification from 'antd/es/notification/useNotification';
 
 export function ExpensePlanRecords() {
-   // const [modal, modalCtx] = useModal();
-   // const [noti, notiCtx] = useNotification();
-   const { data, isLoading } = useQuery({
+   const [modal, modalCtx] = useModal();
+   const [noti, notiCtx] = useNotification();
+   const { data, isLoading, refetch } = useQuery({
       queryKey: ['expense-plan-record-list'],
       refetchOnMount: true,
       refetchInterval: Config.DETAULT_REFETCH_INTERVAL,
@@ -21,11 +23,11 @@ export function ExpensePlanRecords() {
 
    return (
       <div className='flex mt-10 flex-col gap-6 w-[98%]'>
-         {/* {modalCtx}
-         {notiCtx} */}
+         {modalCtx}
+         {notiCtx}
          <div className='flex justify-between items-center'>
             <h1 className='font-semibold text-2xl'>Despesas</h1>
-            <Link to="/expense-plan-record/new" className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+            <Link to="/expense-plan-records/new" className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
                Criar
             </Link>
          </div>
@@ -36,7 +38,7 @@ export function ExpensePlanRecords() {
                rowKey={rec => rec.expense_plan_record_id!}
                columns={[
                   {
-                     dataIndex: 'expense_plan_record_record_id',
+                     dataIndex: 'expense_plan_record_id',
                      title: '#',
                   },
                   {
@@ -126,35 +128,35 @@ export function ExpensePlanRecords() {
                                  icon={<BiTrash />} 
                                  type="link" 
                                  className="!text-red-500 hover:underline"
-                                 // onClick={() => {
-                                 //    modal.confirm({
-                                 //       title: 'Deseja continuar?',
-                                 //       content: (
-                                 //          <div>
-                                 //             <p>Deseja remover o pagamento #{rec.expense_plan_record_id} <span className='font-bold'>{rec.expense_plan?.title}</span>?</p>
+                                 onClick={() => {
+                                    modal.confirm({
+                                       title: 'Deseja continuar?',
+                                       content: (
+                                          <div>
+                                             <p>Deseja remover a despesa #{rec.expense_plan_record_id} <span className='font-bold'>{rec.expense_plan?.title}</span>?</p>
                                              
-                                 //             <div className='mt-4'>
-                                 //                <p>Esta ação não poderá ser desfeita.</p>
-                                 //                <p>O registro será removido permanentemente.</p>
-                                 //             </div>
-                                 //          </div>
-                                 //       ),
-                                 //       onOk: async () => {
-                                 //          try {
-                                 //             await restDeleteExpenseRecord({ expense_plan_record_id: rec.expense_plan_record_id! });
-                                 //             noti.success({
-                                 //                message: 'Pagamento removido com sucesso',
-                                 //             });
-                                 //          } catch(e) {
-                                 //             console.error('restDeleteExpenseRecord', e);
-                                 //             noti.error({
-                                 //                message: 'Erro ao remover Recordo de despesas',
-                                 //             });
-                                 //          }
-                                 //          refetch();                                     
-                                 //       }
-                                 //    })
-                                 // }}
+                                             <div className='mt-4'>
+                                                <p>Esta ação não poderá ser desfeita.</p>
+                                                <p>O registro será removido permanentemente.</p>
+                                             </div>
+                                          </div>
+                                       ),
+                                       onOk: async () => {
+                                          try {
+                                             await restDeleteExpensePlanRecord({ expense_plan_record_id: rec.expense_plan_record_id! });
+                                             noti.success({
+                                                message: 'Pagamento removido com sucesso',
+                                             });
+                                          } catch(e) {
+                                             console.error('restDeleteExpenseRecord', e);
+                                             noti.error({
+                                                message: 'Erro ao remover Recordo de despesas',
+                                             });
+                                          }
+                                          refetch();                                     
+                                       }
+                                    })
+                                 }}
                               >
                                  Remover
                               </Button>

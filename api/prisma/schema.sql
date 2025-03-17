@@ -65,8 +65,6 @@ CREATE TABLE public.expense_plan (
     expense_plan_id integer NOT NULL,
     title text NOT NULL,
     amount_planned integer NOT NULL,
-    first_payment_date timestamp with time zone,
-    last_payment_date timestamp with time zone,
     last_paid_date timestamp with time zone,
     last_amount_spent integer DEFAULT 0 NOT NULL,
     paid_count integer DEFAULT 0 NOT NULL,
@@ -74,7 +72,8 @@ CREATE TABLE public.expense_plan (
     recurrency_interval integer DEFAULT 0 NOT NULL,
     category public.expense_plan_category NOT NULL,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    first_paid_date timestamp with time zone
 );
 
 
@@ -113,8 +112,6 @@ CREATE TABLE public.expense_plan_record (
     payment_date timestamp with time zone NOT NULL,
     paid_date timestamp with time zone NOT NULL,
     expense_plan_sequence integer NOT NULL,
-    previous_payment_amount integer,
-    previous_payment_date timestamp with time zone,
     created_at timestamp with time zone DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at timestamp with time zone NOT NULL
 );
