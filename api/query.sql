@@ -34,3 +34,14 @@ RETURNING *;
 
 -- name: DeleteExpensePlan :execrows
 DELETE FROM expense_plan WHERE expense_plan_id = sqlc.arg('expense_plan_id');
+
+-- name: ListExpensePlanRecords :many
+SELECT 
+   rec.*,
+   ep.title as expense_plan_title,
+   ep.category as expense_plan_category,
+   ep.amount_planned as expense_plan_amount_planned,
+   ep.recurrency_type as expense_plan_recurrency_type,
+   ep.recurrency_interval as expense_plan_recurrency_interval
+FROM expense_plan_record rec
+LEFT JOIN expense_plan ep ON rec.expense_plan_id = ep.expense_plan_id;

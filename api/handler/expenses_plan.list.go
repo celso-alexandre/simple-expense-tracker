@@ -62,7 +62,9 @@ func ListExpensePlan(w http.ResponseWriter, r *http.Request) {
 
 	dbItems, err := q.ListExpensePlans(ctx)
 	if err != nil {
-		http.Error(w, "Failed to fetch expenses", http.StatusInternalServerError)
+		msg := fmt.Sprintf("q.ListExpensePlans() failed: %v", err)
+		fmt.Println(msg)
+		http.Error(w, msg, http.StatusInternalServerError)
 		return
 	}
 

@@ -103,11 +103,11 @@ ALTER SEQUENCE public.expense_plan_expense_plan_id_seq OWNED BY public.expense_p
 
 
 --
--- Name: expense_record; Type: TABLE; Schema: public; Owner: postgres
+-- Name: expense_plan_record; Type: TABLE; Schema: public; Owner: postgres
 --
 
-CREATE TABLE public.expense_record (
-    expense_record_id integer NOT NULL,
+CREATE TABLE public.expense_plan_record (
+    expense_plan_record_id integer NOT NULL,
     expense_plan_id integer NOT NULL,
     amount_paid integer NOT NULL,
     payment_date timestamp with time zone NOT NULL,
@@ -120,13 +120,13 @@ CREATE TABLE public.expense_record (
 );
 
 
-ALTER TABLE public.expense_record OWNER TO postgres;
+ALTER TABLE public.expense_plan_record OWNER TO postgres;
 
 --
--- Name: expense_record_expense_record_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+-- Name: expense_plan_record_expense_plan_record_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
-CREATE SEQUENCE public.expense_record_expense_record_id_seq
+CREATE SEQUENCE public.expense_plan_record_expense_plan_record_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -135,13 +135,13 @@ CREATE SEQUENCE public.expense_record_expense_record_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.expense_record_expense_record_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.expense_plan_record_expense_plan_record_id_seq OWNER TO postgres;
 
 --
--- Name: expense_record_expense_record_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+-- Name: expense_plan_record_expense_plan_record_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
-ALTER SEQUENCE public.expense_record_expense_record_id_seq OWNED BY public.expense_record.expense_record_id;
+ALTER SEQUENCE public.expense_plan_record_expense_plan_record_id_seq OWNED BY public.expense_plan_record.expense_plan_record_id;
 
 
 --
@@ -152,10 +152,10 @@ ALTER TABLE ONLY public.expense_plan ALTER COLUMN expense_plan_id SET DEFAULT ne
 
 
 --
--- Name: expense_record expense_record_id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: expense_plan_record expense_plan_record_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.expense_record ALTER COLUMN expense_record_id SET DEFAULT nextval('public.expense_record_expense_record_id_seq'::regclass);
+ALTER TABLE ONLY public.expense_plan_record ALTER COLUMN expense_plan_record_id SET DEFAULT nextval('public.expense_plan_record_expense_plan_record_id_seq'::regclass);
 
 
 --
@@ -167,19 +167,19 @@ ALTER TABLE ONLY public.expense_plan
 
 
 --
--- Name: expense_record expense_record_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: expense_plan_record expense_plan_record_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.expense_record
-    ADD CONSTRAINT expense_record_pkey PRIMARY KEY (expense_record_id);
+ALTER TABLE ONLY public.expense_plan_record
+    ADD CONSTRAINT expense_plan_record_pkey PRIMARY KEY (expense_plan_record_id);
 
 
 --
--- Name: expense_record expense_record_expense_plan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+-- Name: expense_plan_record expense_plan_record_expense_plan_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.expense_record
-    ADD CONSTRAINT expense_record_expense_plan_id_fkey FOREIGN KEY (expense_plan_id) REFERENCES public.expense_plan(expense_plan_id) ON UPDATE CASCADE ON DELETE RESTRICT;
+ALTER TABLE ONLY public.expense_plan_record
+    ADD CONSTRAINT expense_plan_record_expense_plan_id_fkey FOREIGN KEY (expense_plan_id) REFERENCES public.expense_plan(expense_plan_id) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --

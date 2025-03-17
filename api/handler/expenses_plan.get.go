@@ -76,7 +76,9 @@ func GetExpensePlan(w http.ResponseWriter, r *http.Request) {
 
 	dbItem, err := q.GetExpensePlan(ctx, int32(req.ExpensePlanId))
 	if err != nil {
-		http.Error(w, "Failed to fetch expenses", http.StatusInternalServerError)
+		msg := fmt.Sprintf("q.GetExpensePlan() failed: %v", err)
+		fmt.Println(msg)
+		http.Error(w, msg, http.StatusInternalServerError)
 		return
 	}
 

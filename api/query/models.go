@@ -115,8 +115,8 @@ type ExpensePlan struct {
 	UpdatedAt          pgtype.Timestamptz
 }
 
-type ExpenseRecord struct {
-	ExpenseRecordID       int32
+type ExpensePlanRecord struct {
+	ExpensePlanRecordID   int32
 	ExpensePlanID         int32
 	AmountPaid            int32
 	PaymentDate           pgtype.Timestamptz

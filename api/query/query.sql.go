@@ -7,6 +7,8 @@ package query
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createExpensePlan = `-- name: CreateExpensePlan :one
@@ -96,6 +98,72 @@ func (q *Queries) GetExpensePlan(ctx context.Context, expensePlanID int32) (Expe
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const listExpensePlanRecords = `-- name: ListExpensePlanRecords :many
+SELECT 
+   rec.expense_plan_record_id, rec.expense_plan_id, rec.amount_paid, rec.payment_date, rec.paid_date, rec.expense_plan_sequence, rec.previous_payment_amount, rec.previous_payment_date, rec.created_at, rec.updated_at,
+   ep.title as expense_plan_title,
+   ep.category as expense_plan_category,
+   ep.amount_planned as expense_plan_amount_planned,
+   ep.recurrency_type as expense_plan_recurrency_type,
+   ep.recurrency_interval as expense_plan_recurrency_interval
+FROM expense_plan_record rec
+LEFT JOIN expense_plan ep ON rec.expense_plan_id = ep.expense_plan_id
+`
+
+type ListExpensePlanRecordsRow struct {
+	ExpensePlanRecordID           int32
+	ExpensePlanID                 int32
+	AmountPaid                    int32
+	PaymentDate                   pgtype.Timestamptz
+	PaidDate                      pgtype.Timestamptz
+	ExpensePlanSequence           int32
+	PreviousPaymentAmount         pgtype.Int4
+	PreviousPaymentDate           pgtype.Timestamptz
+	CreatedAt                     pgtype.Timestamptz
+	UpdatedAt                     pgtype.Timestamptz
+	ExpensePlanTitle              pgtype.Text
+	ExpensePlanCategory           NullExpensePlanCategory
+	ExpensePlanAmountPlanned      pgtype.Int4
+	ExpensePlanRecurrencyType     NullRecurrencyType
+	ExpensePlanRecurrencyInterval pgtype.Int4
+}
+
+func (q *Queries) ListExpensePlanRecords(ctx context.Context) ([]ListExpensePlanRecordsRow, error) {
+	rows, err := q.db.Query(ctx, listExpensePlanRecords)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []ListExpensePlanRecordsRow
+	for rows.Next() {
+		var i ListExpensePlanRecordsRow
+		if err := rows.Scan(
+			&i.ExpensePlanRecordID,
+			&i.ExpensePlanID,
+			&i.AmountPaid,
+			&i.PaymentDate,
+			&i.PaidDate,
+			&i.ExpensePlanSequence,
+			&i.PreviousPaymentAmount,
+			&i.PreviousPaymentDate,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.ExpensePlanTitle,
+			&i.ExpensePlanCategory,
+			&i.ExpensePlanAmountPlanned,
+			&i.ExpensePlanRecurrencyType,
+			&i.ExpensePlanRecurrencyInterval,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listExpensePlans = `-- name: ListExpensePlans :many

@@ -42,6 +42,35 @@ export interface HandlerGetExpensePlanResponse {
   updated_at?: string;
 }
 
+export interface HandlerListExpensePlanRecordRequest { [key: string]: unknown }
+
+export interface HandlerListExpensePlanRecordResponse {
+  items?: HandlerListExpensePlanRecordResponseListExpensePlanRecord[];
+}
+
+export interface HandlerListExpensePlanRecordResponseListExpensePlan {
+  amount_planned?: number;
+  category?: string;
+  expense_plan_id?: number;
+  recurrency_interval?: number;
+  recurrency_type?: QueryRecurrencyType;
+  title?: string;
+}
+
+export interface HandlerListExpensePlanRecordResponseListExpensePlanRecord {
+  amount_paid?: number;
+  created_at?: string;
+  expense_plan?: HandlerListExpensePlanRecordResponseListExpensePlan;
+  expense_plan_id?: number;
+  expense_plan_record_id?: number;
+  expense_plan_sequence?: number;
+  paid_date?: string;
+  payment_date?: string;
+  previous_payment_amount?: number;
+  previous_payment_date?: string;
+  updated_at?: string;
+}
+
 export interface HandlerListExpensePlanRequest { [key: string]: unknown }
 
 export interface HandlerListExpensePlanResponse {

@@ -89,7 +89,8 @@ export function ExpensePlans() {
                   },
                   {
                      dataIndex: 'paid_count',
-                     title: 'Parcela',
+                     title: 'Parcelas Pagas',
+                     align: 'center',
                      render(value, rec) {
                         if (!rec.recurrency_type) return null;
                         

@@ -39,6 +39,11 @@ export function SideMenu() {
           label: <a href="/expense-plans">Planejamento Despesas</a>,
           icon: <BiListUl />,
         },
+        {
+          key: '/expense-plan-records',
+          label: <a href="/expense-plan-records">Despesas</a>,
+          icon: <BiListUl />,
+        },
       ],
     },
   ], []);

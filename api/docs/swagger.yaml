@@ -65,6 +65,55 @@ definitions:
       updated_at:
         type: string
     type: object
+  handler.ListExpensePlanRecordRequest:
+    type: object
+  handler.ListExpensePlanRecordResponse:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/handler.ListExpensePlanRecordResponse_ListExpensePlanRecord'
+        type: array
+    type: object
+  handler.ListExpensePlanRecordResponse_ListExpensePlan:
+    properties:
+      amount_planned:
+        type: integer
+      category:
+        type: string
+      expense_plan_id:
+        type: integer
+      recurrency_interval:
+        type: integer
+      recurrency_type:
+        $ref: '#/definitions/query.RecurrencyType'
+      title:
+        type: string
+    type: object
+  handler.ListExpensePlanRecordResponse_ListExpensePlanRecord:
+    properties:
+      amount_paid:
+        type: integer
+      created_at:
+        type: string
+      expense_plan:
+        $ref: '#/definitions/handler.ListExpensePlanRecordResponse_ListExpensePlan'
+      expense_plan_id:
+        type: integer
+      expense_plan_record_id:
+        type: integer
+      expense_plan_sequence:
+        type: integer
+      paid_date:
+        type: string
+      payment_date:
+        type: string
+      previous_payment_amount:
+        type: integer
+      previous_payment_date:
+        type: string
+      updated_at:
+        type: string
+    type: object
   handler.ListExpensePlanRequest:
     type: object
   handler.ListExpensePlanResponse:
@@ -157,6 +206,27 @@ info:
   title: My API
   version: "1.0"
 paths:
+  /expense-plan-record/list:
+    post:
+      consumes:
+      - application/json
+      description: List all expense-plan-record items (using cursor-based pagination)
+      parameters:
+      - description: ListExpensePlanRecordRequest
+        in: body
+        name: request
+        schema:
+          $ref: '#/definitions/handler.ListExpensePlanRecordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handler.ListExpensePlanRecordResponse'
+      summary: List all expense-plan-record items
+      tags:
+      - ExpensePlanRecord
   /expense-plan/create:
     post:
       consumes:

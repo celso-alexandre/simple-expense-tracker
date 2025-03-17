@@ -8,9 +8,9 @@ export function GoBackButton() {
     <Button
       type='text'
       onClick={() => navigate(-1)}
-      className="text-black px-4 py-2 rounded-lg hover:text-gray-500"
+      className="text-black hover:text-gray-500 w-[2px]"
     >
-      {'<'}
+      <span className='text-xs'>{'<'}</span>
     </Button>
   );
 }

@@ -12,11 +12,56 @@ import type {
   HandlerDeleteExpensePlanResponse,
   HandlerGetExpensePlanRequest,
   HandlerGetExpensePlanResponse,
+  HandlerListExpensePlanRecordRequest,
+  HandlerListExpensePlanRecordResponse,
   HandlerListExpensePlanRequest,
   HandlerListExpensePlanResponse,
   HandlerUpdateExpensePlanRequest,
   HandlerUpdateExpensePlanResponse
 } from './generated.schemas';
+
+
+/**
+ * List all expense-plan-record items (using cursor-based pagination)
+ * @summary List all expense-plan-record items
+ */
+export type postExpensePlanRecordListResponse200 = {
+  data: HandlerListExpensePlanRecordResponse
+  status: 200
+}
+    
+export type postExpensePlanRecordListResponseComposite = postExpensePlanRecordListResponse200;
+    
+export type postExpensePlanRecordListResponse = postExpensePlanRecordListResponseComposite & {
+  headers: Headers;
+}
+
+export const getPostExpensePlanRecordListUrl = () => {
+
+
+  
+
+  return `/expense-plan-record/list`
+}
+
+export const postExpensePlanRecordList = async (handlerListExpensePlanRecordRequest: HandlerListExpensePlanRecordRequest, options?: RequestInit): Promise<postExpensePlanRecordListResponse> => {
+  
+  const res = await fetch(getPostExpensePlanRecordListUrl(),
+  {      
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    body: JSON.stringify(
+      handlerListExpensePlanRecordRequest,)
+  }
+)
+
+  const body = [204, 205, 304].includes(res.status) ? null : await res.text()
+  const data: postExpensePlanRecordListResponse['data'] = body ? JSON.parse(body) : {}
+
+  return { data, status: res.status, headers: res.headers } as postExpensePlanRecordListResponse
+}
+
 
 
 /**

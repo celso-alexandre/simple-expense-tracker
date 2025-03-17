@@ -15,6 +15,39 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/expense-plan-record/list": {
+            "post": {
+                "description": "List all expense-plan-record items (using cursor-based pagination)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "ExpensePlanRecord"
+                ],
+                "summary": "List all expense-plan-record items",
+                "parameters": [
+                    {
+                        "description": "ListExpensePlanRecordRequest",
+                        "name": "request",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ListExpensePlanRecordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handler.ListExpensePlanRecordResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/expense-plan/create": {
             "post": {
                 "description": "Create expense-plan item",
@@ -274,6 +307,81 @@ const docTemplate = `{
                     "$ref": "#/definitions/query.RecurrencyType"
                 },
                 "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.ListExpensePlanRecordRequest": {
+            "type": "object"
+        },
+        "handler.ListExpensePlanRecordResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/handler.ListExpensePlanRecordResponse_ListExpensePlanRecord"
+                    }
+                }
+            }
+        },
+        "handler.ListExpensePlanRecordResponse_ListExpensePlan": {
+            "type": "object",
+            "properties": {
+                "amount_planned": {
+                    "type": "integer"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "expense_plan_id": {
+                    "type": "integer"
+                },
+                "recurrency_interval": {
+                    "type": "integer"
+                },
+                "recurrency_type": {
+                    "$ref": "#/definitions/query.RecurrencyType"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "handler.ListExpensePlanRecordResponse_ListExpensePlanRecord": {
+            "type": "object",
+            "properties": {
+                "amount_paid": {
+                    "type": "integer"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "expense_plan": {
+                    "$ref": "#/definitions/handler.ListExpensePlanRecordResponse_ListExpensePlan"
+                },
+                "expense_plan_id": {
+                    "type": "integer"
+                },
+                "expense_plan_record_id": {
+                    "type": "integer"
+                },
+                "expense_plan_sequence": {
+                    "type": "integer"
+                },
+                "paid_date": {
+                    "type": "string"
+                },
+                "payment_date": {
+                    "type": "string"
+                },
+                "previous_payment_amount": {
+                    "type": "integer"
+                },
+                "previous_payment_date": {
                     "type": "string"
                 },
                 "updated_at": {

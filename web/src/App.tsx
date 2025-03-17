@@ -9,6 +9,7 @@ import { NoMatch } from './not-found';
 import { ExpensePlans } from './pages/expense-plans';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ExpensePlanDetails } from './pages/expense-plans/details';
+import { ExpensePlanRecords } from './pages/expense-plan-records';
 
 import('dayjs/locale/pt-br');
 
@@ -37,6 +38,8 @@ export function App() {
 
                 <Route path="/expense-plans/new" element={<ExpensePlanDetails />} />
                 <Route path="/expense-plans/:ID" element={<ExpensePlanDetails />} />
+
+                <Route path="/expense-plan-records" element={<ExpensePlanRecords />} />
 
                 <Route path="*" element={<NoMatch />} />
               </Routes>

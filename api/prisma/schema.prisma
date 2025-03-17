@@ -37,11 +37,11 @@ model expense_plan {
    created_at          DateTime              @default(now()) @db.Timestamptz()
    updated_at          DateTime              @updatedAt @db.Timestamptz()
 
-   expense_record expense_record[]
+   expense_plan_record expense_plan_record[]
 }
 
-model expense_record {
-   expense_record_id       Int          @id @default(autoincrement())
+model expense_plan_record {
+   expense_plan_record_id  Int          @id @default(autoincrement())
    expense_plan_id         Int
    expense_plan            expense_plan @relation(fields: [expense_plan_id], references: [expense_plan_id])
    amount_paid             Int
